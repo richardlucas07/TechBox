@@ -1,0 +1,49 @@
+TECHBOX - COMO INSTALAR E COMO EXPLICAR
+
+INSTALAR
+1. Instale o Node.js LTS e o MySQL (com o Workbench).
+2. No Workbench, conecte como root, abra banco.sql e execute no raio.
+3. Na pasta do projeto, no terminal do VS Code:
+     npm.cmd install
+     node testar-banco.js      (esperado: OK: conectado ao MySQL)
+     node server.js
+4. Abra http://localhost:3000
+
+MySQL em outra maquina/VM: troque DB_HOST no config.env pelo IP dela.
+Nela, libere a porta 3306 e deixe bind-address = 0.0.0.0.
+
+COMO O SITE LIGA NO MYSQL
+Navegador (HTML, CSS, JavaScript)  ->  fetch  ->  Node.js (server.js)
+->  biblioteca mysql2 (db.js)  ->  MySQL (banco techbox_db)
+
+ARQUIVOS
+public/index.html   estrutura da pagina
+public/style.css    visual
+public/script.js    jogo e chamadas ao servidor (fetch)
+server.js           rotas /api, validacao e comandos SQL
+db.js               conexao com o MySQL, le o config.env
+config.env          IP, banco, usuario e senha
+banco.sql           cria banco, tabelas, dados e usuario
+
+TABELAS
+jogadores      recebe a tela de cadastro (INSERT)
+computadores   o site sorteia daqui o PC da caixa (SELECT ... ORDER BY RAND)
+curiosidades   textos exibidos no site (SELECT)
+partidas       resultado de cada jogo; liga jogador e computador por chave estrangeira
+
+ROTEIRO PARA APRESENTAR
+1. Mostre a tela de cadastro e cadastre um nome ficticio.
+2. Mostre o painel "Banco de dados ao vivo": ele exibe o INSERT enviado.
+3. No Workbench:  SELECT * FROM techbox_db.jogadores;
+   O mesmo ID e nome aparecem.
+4. Jogue ate o fim. O site grava a partida. No Workbench:
+   SELECT j.nome, c.nome AS computador, p.pontos, p.tempo_seg
+     FROM techbox_db.partidas p
+     JOIN techbox_db.jogadores j ON j.id = p.jogador_id
+     JOIN techbox_db.computadores c ON c.id = p.computador_id;
+5. Atualize a pagina (F5): o ranking continua, porque esta no banco.
+6. Prova da ligacao: no Workbench rode
+   INSERT INTO techbox_db.curiosidades (texto) VALUES ('Curiosidade criada ao vivo.');
+   e atualize o site ate ela aparecer.
+
+Oculte a senha do config.env em prints.

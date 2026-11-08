@@ -1,0 +1,9 @@
+{
+  "name": "techbox",
+  "version": "1.1.0",
+  "description": "Abra a caixa, monte o computador e entre no ranking",
+  "main": "server.js",
+  "scripts": { "start": "node server.js", "testar": "node testar-banco.js" },
+  "engines": { "node": ">=18" },
+  "dependencies": { "mysql2": "3.11.3" }
+}
