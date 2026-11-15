@@ -1,0 +1,1786 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TechBox</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Lexend:wght@400;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: barra fixa no topo; cada atividade ocupa a página. Fundo grafite de gabinete, detalhe ciano de LED, caixa de papelão como objeto principal. */
+:root {
+  --bg: #0e1124;
+  --bg2: #090b18;
+  --painel: #181c35;
+  --painel2: #222852;
+  --linha: #353d6b;
+  --fg: #eef1f6;
+  --suave: #aeb5d6;
+  --ciano: #35d0f5;
+  --ciano2: #6fe0fa;
+  --ok: #3ddc84;
+  --ok-fundo: #12392a;
+  --ruim: #ff7a6e;
+  --ruim-fundo: #43201f;
+  --ouro: #f5c542;
+  --kraft: #b98a52;
+  --kraft-claro: #cda06a;
+  --kraft-escuro: #8f6638;
+  --fita: #e8d9b4;
+  --tinta: #171b24;
+  --display: "Bungee", "Arial Black", Impact, sans-serif;
+  --titulo: "Lexend", "Segoe UI", Arial, sans-serif;
+  --texto: "Lexend", "Segoe UI", Arial, sans-serif;
+  --laranja: #ff8a3d;
+  --mono: "IBM Plex Mono", Consolas, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0; color: var(--fg); font: 18px/1.5 var(--texto); background-color: var(--bg);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240' fill='none' stroke='%231d2348' stroke-width='2'%3E%3Cpath d='M0 40h60l30 30h70l40-40h40M0 150h40l30-30h60l30 30v40l30 30M120 0v40l-20 20M200 240v-60l20-20h20'/%3E%3Cg fill='%231d2348' stroke='none'%3E%3Ccircle cx='160' cy='70' r='4'/%3E%3Ccircle cx='70' cy='120' r='4'/%3E%3Ccircle cx='190' cy='220' r='4'/%3E%3C/g%3E%3C/svg%3E");
+}
+[hidden] { display: none !important; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--ouro); outline-offset: 2px; }
+.envolve { max-width: 1240px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+
+/* Topo */
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg2); }
+.topo { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 9; background: var(--bg2); border-bottom: 2px solid var(--ciano); }
+.topo .envolve { display: flex; align-items: center; gap: 12px 20px; flex-wrap: wrap; padding-block: 10px; }
+.marca { font: 400 1.7rem/1 var(--display); color: var(--ciano); text-decoration: none; }
+.marca span { color: var(--laranja); }
+.menu { display: flex; gap: 6px; flex-wrap: wrap; flex: 1; }
+.menu a { padding: 7px 12px; color: var(--suave); text-decoration: none; font-weight: 600; font-size: .95rem; border: 1px solid transparent; }
+.menu a:hover { color: var(--fg); }
+.menu a[aria-current="page"] { color: var(--tinta); background: var(--ciano); }
+.som { padding: 7px 12px; font: 500 .85rem var(--mono); background: transparent; border: 1px solid var(--suave); cursor: pointer; }
+
+main { padding-block: 28px 56px; }
+h1, h2, h3 { text-wrap: balance; }
+.titulo { margin: 0 0 8px; font: 400 clamp(1.8rem, 4.4vw, 2.7rem)/1.1 var(--display); color: var(--fg); }
+.lead { margin: 0 0 24px; color: var(--suave); font-size: 1.1rem; max-width: 62ch; }
+.botao { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 52px; padding: 12px 24px; font-weight: 700; font-size: 1.05rem; color: var(--tinta); background: var(--ciano); border: 0; cursor: pointer; text-decoration: none; box-shadow: 0 4px 0 #1d8fae; }
+.botao:hover { background: var(--ciano2); }
+.botao:active { transform: translateY(2px); box-shadow: 0 2px 0 #1d8fae; }
+.botao:disabled { color: var(--suave); background: var(--painel2); box-shadow: none; cursor: not-allowed; }
+.botao.leve { color: var(--fg); background: transparent; border: 2px solid var(--suave); box-shadow: none; }
+.botao.leve:hover { border-color: var(--fg); }
+
+/* Início */
+.hero { position: relative; display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 24px; align-items: center; margin: 8px 0 40px; padding: clamp(20px, 4vw, 44px); background: radial-gradient(120% 90% at 85% 40%, #1d2a5c 0%, var(--bg) 62%); border: 1px solid var(--linha); overflow: hidden; }
+.logo-grande { margin: 0 0 14px; font: 400 clamp(3.2rem, 10vw, 6.4rem)/.9 var(--display); color: var(--ciano); text-shadow: 4px 4px 0 #0b3a4a, 8px 8px 0 rgba(0, 0, 0, .35); }
+.logo-grande span { display: block; color: var(--laranja); text-shadow: 4px 4px 0 #5a2a0c, 8px 8px 0 rgba(0, 0, 0, .35); }
+.hero-sub { margin: 0 0 24px; font-size: clamp(1.1rem, 2.2vw, 1.35rem); line-height: 1.45; max-width: 34ch; }
+.hero-sub b { color: var(--ciano); }
+.hero-caixa { display: grid; justify-items: center; gap: 14px; min-width: 0; }
+.hero-caixa .cena { --s: 150px; width: 270px; height: 250px; }
+.orbita { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; width: 100%; max-width: 560px; }
+.orbita[hidden] { display: none; }
+.orb { display: grid; justify-items: center; gap: 2px; min-width: 0; padding: 8px 4px; font-size: .74rem; font-weight: 700; line-height: 1.15; text-align: center; color: var(--fg); background: var(--painel); border: 2px solid var(--ciano); cursor: pointer; overflow-wrap: anywhere; }
+.orb svg { width: 100%; max-width: 64px; height: 40px; }
+.orb:hover { background: var(--painel2); }
+.orb[aria-pressed="true"] { background: var(--ciano); color: var(--tinta); }
+.fala-hero { width: 100%; max-width: 560px; min-height: 3em; margin: 0; padding: 10px 14px; font-size: .98rem; color: var(--tinta); background: #f3f4f0; text-align: left; }
+.atividades { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.atividade { display: grid; grid-template-rows: 120px auto 1fr auto; gap: 10px; padding: 0 0 20px; color: inherit; text-decoration: none; background: var(--painel); border: 1px solid var(--linha); overflow: hidden; }
+.atividade:hover { border-color: var(--ciano); }
+.atividade .ilus { display: grid; place-items: center; background: var(--bg2); border-bottom: 3px solid var(--laranja); }
+.atividade .ilus svg { width: 84px; height: 84px; }
+.atividade h2, .atividade p, .atividade .ir { margin: 0; padding: 0 20px; }
+.atividade h2 { font: 700 1.4rem/1.15 var(--titulo); }
+.atividade p { color: var(--suave); }
+.atividade .ir { font-weight: 700; color: var(--ciano); }
+.tempo { font: 500 .85rem var(--mono); color: var(--suave); }
+
+/* Caixa 3D */
+.cena { --s: clamp(130px, 18vw, 200px); width: calc(var(--s) * 1.8); max-width: 100%; height: calc(var(--s) * 1.7); display: grid; place-items: center; perspective: 900px; position: relative; }
+.sombra { position: absolute; left: 50%; bottom: 4%; width: calc(var(--s) * 1.4); height: calc(var(--s) * .28); transform: translateX(-50%); background: radial-gradient(closest-side, rgba(0,0,0,.55), transparent); }
+.cubo { width: var(--s); height: var(--s); position: relative; transform-style: preserve-3d; transform: translateY(12%) rotateX(-24deg) rotateY(-34deg); }
+.face { position: absolute; inset: 0; background: var(--kraft); border: 1px solid var(--kraft-escuro); }
+.frente { transform: translateZ(calc(var(--s) / 2)); background: var(--kraft-claro); display: grid; place-items: center; }
+.direita { transform: rotateY(90deg) translateZ(calc(var(--s) / 2)); background: var(--kraft-escuro); }
+.fundo { transform: rotateY(180deg) translateZ(calc(var(--s) / 2)); }
+.esquerda { transform: rotateY(-90deg) translateZ(calc(var(--s) / 2)); }
+.base { transform: rotateX(-90deg) translateZ(calc(var(--s) / 2)); background: #3b2a16; }
+.interrogacao { font: 400 calc(var(--s) * .55)/1 var(--display); color: var(--tinta); opacity: .85; }
+.fragil { position: absolute; top: 8%; left: 8%; font: 400 calc(var(--s) * .09)/1 var(--display); color: #b3261e; }
+.tampa { position: absolute; inset: 0; transform-style: preserve-3d; transform: rotateX(90deg) translateZ(calc(var(--s) / 2)); }
+.aba { position: absolute; top: 0; bottom: 0; width: 50%; background: var(--kraft); border: 1px solid var(--kraft-escuro); transition: transform .7s cubic-bezier(.3, 1.35, .5, 1); }
+.aba::after { content: ""; position: absolute; top: 0; bottom: 0; width: 44%; background: var(--fita); opacity: .92; transition: opacity .25s; }
+.aba.esq { left: 0; transform-origin: left center; }
+.aba.esq::after { right: 0; }
+.aba.dir { right: 0; transform-origin: right center; }
+.aba.dir::after { left: 0; }
+.cubo.aberta .aba::after { opacity: 0; }
+.cubo.aberta .aba.esq { transform: rotateY(-128deg); }
+.cubo.aberta .aba.dir { transform: rotateY(128deg); }
+.brilho { position: absolute; inset: -18%; transform: rotateX(90deg) translateZ(calc(var(--s) / 2 - 8px)); background: radial-gradient(closest-side, rgba(190, 240, 255, .95), rgba(53, 208, 245, .35) 55%, transparent); opacity: 0; transition: opacity .5s; }
+.cubo.aberta .brilho { opacity: 1; }
+.cubo.treme { animation: treme .8s linear; }
+@keyframes treme {
+  0%, 100% { transform: translateY(12%) rotateX(-24deg) rotateY(-34deg) rotateZ(0); }
+  20% { transform: translateY(12%) rotateX(-24deg) rotateY(-30deg) rotateZ(-3deg); }
+  45% { transform: translateY(9%) rotateX(-24deg) rotateY(-38deg) rotateZ(3deg); }
+  70% { transform: translateY(12%) rotateX(-24deg) rotateY(-31deg) rotateZ(-4deg); }
+}
+
+
+/* Monte: escolher jogo */
+.jogos { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; }
+.jogo { display: grid; grid-template-rows: auto auto auto 1fr auto; gap: 6px; padding: 0 0 16px; text-align: left; background: var(--painel); border: 1px solid var(--linha); cursor: pointer; overflow: hidden; }
+.jogo > :not(.capa) { margin-left: 16px; margin-right: 16px; }
+.jogo .capa svg { display: block; width: 100%; height: 100%; }
+.jogo:hover { background: var(--painel2); border-color: var(--ciano); }
+.jogo .capa { height: 110px; margin-bottom: 6px; }
+.jogo h3 { margin: 4px 0 0; font: 700 1.3rem/1.1 var(--titulo); }
+.jogo p { margin: 0; color: var(--suave); font-size: .95rem; line-height: 1.35; }
+.jogo .preco-jogo { align-self: end; padding-top: 6px; font-weight: 700; color: var(--ouro); border-top: 1px solid var(--linha); }
+.nivel { justify-self: start; padding: 2px 10px; font: 500 .8rem var(--mono); border: 1px solid currentColor; }
+.nivel.f { color: var(--ok); } .nivel.m { color: var(--ouro); } .nivel.d { color: var(--ruim); }
+.nota-fonte { margin-top: 16px; font-size: .85rem; color: var(--suave); }
+
+/* Monte: bancada */
+.bancada { display: grid; grid-template-columns: minmax(280px, 1fr) minmax(0, 2.3fr); gap: 24px; align-items: start; }
+.ficha { position: sticky; top: 86px; max-height: calc(100vh - 100px); overflow-y: auto; padding: 18px; color: var(--tinta); background: #f3f4f0; }
+.ficha h2 { margin: 0; font: 700 1.6rem/1.1 var(--titulo); }
+.ficha .sub { margin: 2px 0 12px; color: #55606e; font-size: .92rem; }
+.ficha .carimbo { display: inline-block; margin-bottom: 8px; padding: 2px 8px; font: 700 .85rem var(--titulo); color: #b3261e; border: 2px solid #b3261e; transform: rotate(-3deg); }
+.reqs { list-style: none; margin: 0 0 12px; padding: 0; border-top: 2px solid var(--tinta); }
+.reqs li { padding: 8px 0 8px 28px; border-bottom: 1px solid #cfd5dc; position: relative; font-size: .95rem; line-height: 1.35; }
+.reqs li::before { content: ""; position: absolute; left: 3px; top: 12px; width: 14px; height: 14px; border: 2px solid #8a94a3; border-radius: 50%; }
+.reqs li.ok::before { content: "✓"; display: grid; place-items: center; width: 18px; height: 18px; left: 1px; top: 10px; font-size: .75rem; font-weight: 700; color: #fff; background: #1f9d55; border-color: #1f9d55; }
+.reqs li.ruim::before { content: "!"; display: grid; place-items: center; width: 18px; height: 18px; left: 1px; top: 10px; font-size: .8rem; font-weight: 700; color: #fff; background: #c63b2f; border-color: #c63b2f; }
+.reqs li.ok { background: #e3f4ea; }
+.reqs li.ruim { background: #fbe7e5; }
+.reqs .minimo { display: block; font: 500 .8rem var(--mono); color: #2b3a8a; }
+.reqs b { display: block; }
+.reqs .oficial { display: block; color: #55606e; font-size: .85rem; }
+.reqs .exp { display: block; margin-top: 2px; font-size: .9rem; }
+.reqs li.ok .exp { color: #146c3b; }
+.reqs li.ruim .exp { color: #a12a20; }
+.contas { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 12px; font-size: .85rem; }
+.contas div { padding: 7px 8px; background: #e2e6ea; }
+.contas b { display: block; font: 700 1rem var(--mono); font-variant-numeric: tabular-nums; }
+.ficha .botao { width: 100%; }
+.trocar { margin-top: 8px; width: 100%; padding: 10px; font-weight: 600; color: var(--tinta); background: transparent; border: 1px solid #8a94a3; cursor: pointer; }
+.ficha .pequeno { margin: 10px 0 0; font-size: .78rem; color: #55606e; line-height: 1.35; }
+
+.lado { display: grid; gap: 18px; min-width: 0; }
+.gabinete { padding: 16px; background: var(--bg2); border: 3px solid var(--linha); border-radius: 6px; }
+.gabinete h3 { margin: 0 0 10px; font: 700 1.2rem var(--titulo); }
+.slots { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
+.slot { display: grid; grid-template-rows: auto 56px auto auto auto; gap: 3px; padding: 10px; min-width: 0; background: var(--painel); border: 2px dashed var(--linha); }
+.slot.cheio { border: 2px solid var(--ok); background: #18322a; }
+.slot.alvo { border-color: var(--ouro); }
+.slot.errou { animation: erro .35s linear; border-color: var(--ruim); }
+.slot.ruim-teste { border-color: var(--ruim); background: var(--ruim-fundo); }
+@keyframes erro { 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+.slot .cat { display: flex; justify-content: space-between; gap: 4px; font-weight: 700; font-size: .9rem; }
+.slot .cat .check { color: var(--ok); }
+.slot svg { width: 100%; height: 56px; }
+.slot .vazio { display: grid; place-items: center; height: 56px; color: var(--suave); font-size: .82rem; text-align: center; line-height: 1.2; }
+.slot .nome { font-weight: 700; font-size: .9rem; line-height: 1.2; overflow-wrap: anywhere; }
+.slot .info { font-size: .78rem; color: var(--suave); line-height: 1.25; }
+.slot .acoes { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+.mini { padding: 3px 8px; font-size: .76rem; font-weight: 600; background: transparent; border: 1px solid var(--suave); cursor: pointer; }
+.dica { margin: 6px 0 0; padding: 8px; font-size: .82rem; line-height: 1.35; background: var(--bg2); border-left: 3px solid var(--ouro); }
+
+.mesa-caixa { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 20px; align-items: center; padding: 18px; background: var(--painel); border: 1px solid var(--linha); }
+.mesa-caixa h3 { margin: 0 0 6px; font: 700 1.3rem var(--titulo); }
+.mesa-caixa p { margin: 0 0 14px; color: var(--suave); }
+.loja h3 { margin: 0 0 4px; font: 700 1.25rem var(--titulo); }
+.loja > p { margin: 0 0 12px; color: var(--suave); font-size: .95rem; }
+.filtros { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; margin-bottom: 10px; }
+.busca { width: 100%; min-height: 46px; padding: 10px 12px; font: inherit; color: var(--fg); background: var(--bg2); border: 2px solid var(--linha); }
+.busca:focus { border-color: var(--ciano); outline: none; }
+.ordem { min-height: 46px; padding: 8px 10px; font: inherit; font-size: .95rem; color: var(--fg); background: var(--bg2); border: 2px solid var(--linha); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.chip { padding: 7px 12px; font-size: .9rem; font-weight: 600; background: transparent; border: 1px solid var(--linha); cursor: pointer; }
+.chip[aria-pressed="true"] { color: var(--tinta); background: var(--ciano); border-color: var(--ciano); }
+.contagem { margin: 0 0 8px; font-size: .85rem; color: var(--suave); }
+.bandeja { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; }
+.peca { display: grid; grid-template-rows: 48px auto auto auto auto; gap: 2px; padding: 10px; text-align: left; background: var(--painel); border: 2px solid var(--linha); cursor: grab; touch-action: none; user-select: none; position: relative; }
+.peca:hover { border-color: var(--ciano); }
+.peca svg { width: 100%; height: 48px; pointer-events: none; }
+.peca .tipo { font-size: .75rem; color: var(--suave); }
+.peca .nome { font-weight: 700; font-size: .95rem; line-height: 1.2; }
+.peca .spec { font-size: .8rem; color: var(--suave); line-height: 1.25; }
+.peca .preco { font: 700 .95rem var(--mono); color: var(--ouro); font-variant-numeric: tabular-nums; }
+.peca img { width: 100%; height: 48px; object-fit: contain; pointer-events: none; }
+.forca { display: grid; gap: 2px; margin-top: 4px; }
+.forca span { font-size: .72rem; color: var(--suave); }
+.barra { position: relative; height: 9px; background: var(--bg2); border: 1px solid var(--linha); }
+.barra i { position: absolute; inset: 0 auto 0 0; background: linear-gradient(90deg, #2a8fb0, var(--ciano)); }
+.barra b { position: absolute; top: -4px; bottom: -4px; width: 3px; margin-left: -1px; background: var(--laranja); }
+.legenda-forca { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 0 0 10px; font-size: .82rem; color: var(--suave); }
+.legenda-forca i { display: inline-block; width: 22px; height: 9px; margin-right: 6px; vertical-align: 0; background: linear-gradient(90deg, #2a8fb0, var(--ciano)); }
+.legenda-forca b { display: inline-block; width: 3px; height: 14px; margin-right: 6px; vertical-align: -2px; background: var(--laranja); }
+.peca.usada { border-color: var(--ok); background: #18322a; }
+.peca.usada::after { content: "✓ No PC"; position: absolute; top: 6px; right: 6px; padding: 1px 7px; font-size: .75rem; font-weight: 700; color: var(--tinta); background: var(--ok); }
+.peca.oculta { visibility: hidden; }
+.selo { justify-self: start; margin-top: 2px; padding: 1px 6px; font-size: .72rem; font-weight: 700; color: var(--tinta); background: var(--ciano); }
+.vazio-busca { padding: 18px; color: var(--suave); background: var(--painel); }
+.fantasma, .voando { position: fixed; z-index: 30; width: 100px; pointer-events: none; opacity: .92; }
+
+.resultado { padding: 18px; border: 2px solid; }
+.resultado.ok { background: var(--ok-fundo); border-color: var(--ok); }
+.resultado.ruim { background: var(--ruim-fundo); border-color: var(--ruim); }
+.resultado h3 { margin: 0 0 6px; font: 700 1.5rem var(--titulo); }
+.resultado p { margin: 0 0 12px; }
+.estrelas { font-size: 2.1rem; letter-spacing: 4px; color: var(--ouro); line-height: 1; margin-bottom: 8px; }
+.estrelas .apagada { color: #4a5568; }
+.linha-botoes { display: flex; flex-wrap: wrap; gap: 10px; }
+.ideal { margin: 0 0 14px; padding: 12px 14px 12px 30px; background: rgba(0, 0, 0, .25); }
+.ideal li { padding: 2px 0; }
+.ideal[hidden] { display: none; }
+
+/* Técnico */
+.oficina { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+.gabinete-aberto { padding: 16px; background: var(--bg2); border: 3px solid var(--linha); border-radius: 8px; }
+.gabinete-aberto h2 { margin: 0 0 4px; font: 700 1.15rem var(--titulo); }
+.gabinete-aberto > p { margin: 0 0 12px; color: var(--suave); font-size: .95rem; }
+.interior { display: grid; gap: 8px; grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-areas: "cpu cooler ram" "gpu gpu bateria" "ssd placa rede" "psu psu psu" "cabo monitor perif";
+  padding: 12px; background: #1f5d4c; border: 2px solid #2f7a64; }
+.parte { display: grid; justify-items: center; align-content: center; gap: 4px; min-width: 0; min-height: 92px; padding: 8px 6px; font-size: .88rem; font-weight: 700; line-height: 1.15; text-align: center; overflow-wrap: anywhere; color: var(--fg); background: rgba(9, 11, 24, .82); border: 2px solid #4e8f7a; cursor: pointer; }
+.parte svg { width: 100%; max-width: 92px; height: 46px; }
+.parte:hover:not(:disabled) { border-color: var(--ciano); background: var(--painel2); }
+.parte:disabled { cursor: default; }
+.parte.errou { border-color: var(--ruim); background: var(--ruim-fundo); animation: erro .35s linear; }
+.parte.consertada { border-color: var(--ok); background: var(--ok-fundo); box-shadow: 0 0 18px rgba(61, 220, 132, .6); }
+.parte small { font-weight: 400; color: var(--suave); }
+.cliente { padding: 18px; background: var(--painel); border: 1px solid var(--linha); }
+.placar-tec { margin-bottom: 10px; font: 500 .9rem var(--mono); color: var(--ciano); }
+.quem-fala { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.avatar { display: grid; place-items: center; width: 52px; height: 52px; flex: none; border-radius: 50%; font: 400 1.1rem var(--display); color: var(--tinta); background: var(--laranja); }
+.quem-fala b { display: block; font-size: 1.1rem; }
+.quem-fala span { color: var(--suave); font-size: .9rem; }
+.balao { position: relative; margin: 0 0 14px; padding: 14px 16px; font-size: 1.15rem; font-weight: 600; line-height: 1.45; color: var(--tinta); background: #f3f4f0; border-radius: 6px; }
+.balao::before { content: ""; position: absolute; top: -10px; left: 20px; border: 10px solid transparent; border-top: 0; border-bottom-color: #f3f4f0; }
+.instrucao { margin: 0 0 12px; color: var(--suave); }
+.dica-tec { margin: 0 0 12px; padding: 10px 12px; background: var(--bg2); border-left: 4px solid var(--ouro); }
+.retorno { margin: 0 0 12px; padding: 12px; border-left: 4px solid; }
+.retorno.ok { border-color: var(--ok); background: var(--ok-fundo); }
+.retorno.ruim { border-color: var(--ruim); background: var(--ruim-fundo); }
+.retorno p { margin: 4px 0 0; }
+.retorno small { display: block; margin-top: 6px; }
+@media (max-width: 980px) { .oficina { grid-template-columns: minmax(0, 1fr); } .cliente { order: -1; } }
+@media (max-width: 480px) { .interior { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-areas: "cpu cooler" "ram bateria" "gpu gpu" "ssd rede" "placa placa" "psu psu" "cabo monitor" "perif perif"; } .parte { min-height: 84px; } }
+
+/* Caminho do clique */
+.analogia { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; margin-bottom: 18px; }
+.analogia div { padding: 10px; font-size: .85rem; line-height: 1.3; background: var(--painel); border: 1px solid var(--linha); }
+.analogia b { display: block; color: var(--ciano); }
+.acoes-caminho { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
+.acao { padding: 12px 18px; font-weight: 700; background: var(--painel); border: 2px solid var(--linha); cursor: pointer; }
+.acao[aria-pressed="true"] { color: var(--tinta); background: var(--ciano); border-color: var(--ciano); }
+.trilha { display: flex; align-items: center; gap: 0; margin-bottom: 14px; overflow-x: auto; padding: 4px 2px; }
+.parada { flex: none; display: grid; justify-items: center; align-content: start; gap: 2px; width: 92px; height: 84px; padding: 6px 4px; font-size: .72rem; line-height: 1.2; overflow-wrap: anywhere; min-width: 0; font-weight: 600; text-align: center; color: var(--suave); background: var(--bg2); border: 2px solid var(--linha); }
+.parada svg { width: 52px; height: 35px; }
+.parada.feita { color: var(--fg); border-color: #2f6f84; }
+.parada.atual { color: var(--tinta); background: var(--ciano); border-color: var(--ciano); }
+.parada.atual svg { filter: brightness(.35); }
+.seta { flex: 1 0 14px; min-width: 14px; height: 3px; background: var(--linha); }
+.seta.feita { background: var(--ciano); }
+.cartao { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); border: 2px solid var(--linha); }
+.cartao > div { padding: 18px; }
+.cartao .pc-lado { background: var(--painel); }
+.cartao .cozinha { color: var(--tinta); background: #f3f4f0; }
+.cartao small { display: block; margin-bottom: 4px; font: 500 .8rem var(--mono); opacity: .75; }
+.cartao p { margin: 0; font-size: 1.15rem; font-weight: 600; line-height: 1.4; }
+.cartao .peca-grande { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; font: 700 1.2rem var(--titulo); color: var(--ciano); }
+.cartao .peca-grande svg { width: 72px; height: 48px; }
+.cartao .cozinha .peca-grande { color: #1f6f8b; }
+.tempo-passo { display: inline-block; margin-top: 10px; padding: 3px 10px; font: 500 .85rem var(--mono); color: var(--tinta); background: var(--ouro); }
+.resumo-tempo { margin-top: 16px; padding: 18px; background: var(--painel); border: 2px solid var(--ouro); }
+.resumo-tempo h3 { margin: 0 0 4px; font: 400 1.3rem var(--display); color: var(--ouro); }
+.resumo-tempo p { margin: 0 0 12px; }
+.linha-tempo { display: grid; grid-template-columns: 140px minmax(0, 1fr) 110px; gap: 10px; align-items: center; min-height: 26px; margin-bottom: 4px; font-size: .9rem; }
+.linha-tempo span { white-space: nowrap; }
+.linha-tempo .b { height: 14px; min-width: 3px; background: var(--ouro); }
+.linha-tempo span:last-child { font-family: var(--mono); color: var(--suave); text-align: right; }
+.navega { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+.navega .passo-n { font: 500 .9rem var(--mono); color: var(--suave); }
+
+/* Cadastro e painel */
+.quem { padding: 7px 12px; font-weight: 600; font-size: .9rem; color: var(--fg); background: var(--painel); border: 1px solid var(--ciano); cursor: pointer; max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cadastro-fundo { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; padding: 16px; background: rgba(5, 7, 16, .82); }
+.cadastro-caixa { display: grid; gap: 12px; width: min(460px, 100%); padding: 24px; background: var(--painel); border: 2px solid var(--ciano); }
+.cadastro-caixa h2 { margin: 0; font: 400 1.6rem var(--display); color: var(--ciano); }
+.cadastro-caixa p { margin: 0; color: var(--suave); }
+.cadastro-caixa label { display: grid; gap: 4px; font-weight: 600; }
+.cadastro-caixa input { min-height: 48px; padding: 10px 12px; font: inherit; color: var(--fg); background: var(--bg2); border: 2px solid var(--linha); }
+.cadastro-caixa input:focus { border-color: var(--ciano); outline: none; }
+.erro-form { color: var(--ruim) !important; font-weight: 600; }
+.erro-form:empty { display: none; }
+.fonte-dados { margin: 0 0 16px; font-size: .88rem; color: var(--suave); }
+.fonte-dados.online { color: var(--ok); }
+.salvo { margin: 10px 0 0; font: 500 .85rem var(--mono); color: var(--suave); }
+.salvo.ok { color: var(--ok); }
+.status-banco { display: inline-block; margin: 0 0 18px; padding: 6px 12px; font-weight: 600; border: 1px solid; }
+.status-banco.on { color: var(--ok); border-color: var(--ok); }
+.status-banco.off { color: var(--ruim); border-color: var(--ruim); }
+.kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 18px; }
+.kpi { padding: 16px; background: var(--painel); border: 1px solid var(--linha); border-top: 4px solid var(--ciano); }
+.kpi b { display: block; font: 400 2.2rem/1.1 var(--display); color: var(--fg); font-variant-numeric: tabular-nums; }
+.kpi span { color: var(--suave); font-size: .9rem; }
+.painel-grade { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.bloco { min-width: 0; padding: 16px 18px; background: var(--painel); border: 1px solid var(--linha); }
+.bloco h2 { margin: 0 0 10px; font: 700 1.15rem var(--titulo); }
+.bloco ol { margin: 0; padding-left: 22px; }
+.bloco li { padding: 4px 0; }
+.bloco li b { color: var(--ciano); font-variant-numeric: tabular-nums; }
+.bloco .vazio-p { margin: 0; color: var(--suave); }
+.tabela-rolagem { overflow-x: auto; }
+.bloco table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+.bloco th, .bloco td { padding: 6px 8px 6px 0; text-align: left; border-bottom: 1px solid var(--linha); white-space: nowrap; }
+.bloco th { color: var(--suave); font-weight: 600; }
+.bloco.largo { grid-column: 1 / -1; }
+.status-banco[hidden], #p-conteudo[hidden] { display: none; }
+.kpi small { display: block; margin-top: 2px; color: var(--ciano); font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ranking td.pos { font-weight: 700; color: var(--suave); }
+.ranking td.num, .ranking th.num { text-align: right; font-variant-numeric: tabular-nums; }
+.ranking td.total { font-weight: 700; color: var(--fg); }
+.ranking tr.ouro td.pos { color: #f5c542; } .ranking tr.prata td.pos { color: #c9d1da; } .ranking tr.bronze td.pos { color: #d08a4f; }
+.ranking tr.ouro td { background: rgba(245, 197, 66, .12); } .ranking tr.prata td { background: rgba(201, 209, 218, .08); } .ranking tr.bronze td { background: rgba(208, 138, 79, .10); }
+.ranking tr.eu td { box-shadow: inset 0 -2px 0 var(--ciano), inset 0 2px 0 var(--ciano); }
+.ranking tr.eu td:nth-child(2)::after { content: " (você)"; color: var(--ciano); font-weight: 600; }
+.ranking td:nth-child(2) { max-width: 220px; overflow: hidden; text-overflow: ellipsis; }
+.regras { margin: 0; padding-left: 20px; line-height: 1.45; }
+.regras li { padding: 4px 0; }
+.regras li b { color: var(--fg); }
+.feito { margin: 0; padding: 0; list-style: none; }
+.feito li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 10px; padding: 8px 0; border-bottom: 1px solid var(--linha); }
+.feito li b { color: var(--ok); font-variant-numeric: tabular-nums; }
+.feito li small { grid-column: 1 / -1; color: var(--suave); }
+.feito .estr { color: var(--ouro); }
+.vale-pontos { display: inline-block; margin: 0 0 10px; padding: 4px 12px; font-weight: 700; color: var(--tinta); background: var(--ouro); }
+.aviso-toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); z-index: 40; max-width: min(520px, calc(100% - 32px)); padding: 12px 18px; color: var(--tinta); background: var(--ouro); font-weight: 600; box-shadow: 0 6px 20px rgba(0, 0, 0, .4); }
+
+@media (max-width: 1100px) {
+  .hero { grid-template-columns: minmax(0, 1fr); }
+  .jogos { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .analogia { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 980px) {
+  .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .painel-grade { grid-template-columns: minmax(0, 1fr); }
+  .bancada, .tecnico { grid-template-columns: minmax(0, 1fr); }
+  .ficha { position: static; max-height: none; }
+  .slots { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 760px) {
+  .atividades { grid-template-columns: minmax(0, 1fr); }
+  .linha-tempo { grid-template-columns: 96px minmax(0, 1fr) 84px; font-size: .8rem; }
+  .linha-tempo span:first-child { white-space: normal; }
+  .mesa-caixa { grid-template-columns: minmax(0, 1fr); justify-items: center; text-align: center; }
+  .jogos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cartao { grid-template-columns: minmax(0, 1fr); }
+  .suspeitos { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .filtros { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 480px) {
+  .orbita { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  body { font-size: 17px; }
+  .jogos, .analogia { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .slots { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .bandeja { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .contas { grid-template-columns: 1fr 1fr; }
+  .placa { grid-template-columns: minmax(0, 1fr); justify-items: center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .aba, .brilho { transition: none; }
+  .cubo.treme, .slot.errou, .ventoinha.gira svg { animation: none; }
+}
+</style>
+</head>
+<body>
+<header class="topo">
+  <div class="envolve">
+    <a class="marca" href="#inicio">Tech<span>Box</span></a>
+    <nav class="menu" aria-label="Atividades">
+      <a href="#inicio" data-rota="inicio">Início</a>
+      <a href="#montar" data-rota="montar">Monte seu PC</a>
+      <a href="#ligar" data-rota="ligar">Técnico por um dia</a>
+      <a href="#caminho" data-rota="caminho">Caminho do clique</a>
+      <a href="#painel" data-rota="painel">Competição</a>
+    </nav>
+    <button id="quem" class="quem" type="button">Entrar</button>
+    <button id="som" class="som" type="button" aria-pressed="true">Som ligado</button>
+  </div>
+</header>
+
+<main class="envolve">
+  <!-- INÍCIO -->
+  <section id="v-inicio" data-vista>
+    <div class="hero">
+      <div>
+        <h1 class="logo-grande">Tech<span>Box</span></h1>
+        <p class="hero-sub">Abra a caixa e descubra <b>como um computador funciona por dentro</b>. Feito para quem nunca mexeu em um PC.</p>
+        <div class="linha-botoes">
+          <a class="botao" href="#montar">Montar meu PC</a>
+          <a class="botao leve" href="#caminho">Entender o básico</a>
+        </div>
+      </div>
+      <div class="hero-caixa">
+        <div id="caixa-hero" aria-hidden="true"></div>
+        <div class="orbita" id="orbita" hidden></div>
+        <button class="botao" id="abrir-hero" type="button">Abrir a caixa</button>
+        <p class="fala-hero" id="fala-hero" aria-live="polite">Toque no botão para ver as peças que ficam dentro de um computador.</p>
+      </div>
+    </div>
+    <div class="atividades">
+      <a class="atividade" href="#montar">
+        <div class="ilus"><svg viewBox="0 0 64 64" aria-hidden="true"><path fill="#cda06a" d="M32 4 58 17 32 30 6 17z"/><path fill="#b98a52" d="M6 17 32 30v30L6 47z"/><path fill="#8f6638" d="M58 17 32 30v30l26-13z"/></svg></div>
+        <h2>Monte seu PC</h2>
+        <p>Escolha um jogo famoso e monte um PC que rode esse jogo, com peças e preços de verdade.</p>
+        <span class="ir">Montar <span class="tempo">· 3 min</span></span>
+      </a>
+      <a class="atividade" href="#ligar">
+        <div class="ilus"><svg viewBox="0 0 64 64" aria-hidden="true"><rect x="8" y="10" width="48" height="44" fill="#1f5d4c" stroke="#2f7a64" stroke-width="3"/><circle cx="20" cy="24" r="5" fill="#ff9f1a"/><circle cx="36" cy="24" r="5" fill="#2c3b36"/><circle cx="20" cy="40" r="5" fill="#2c3b36"/><circle cx="36" cy="40" r="5" fill="#2c3b36"/><path d="M46 20v24" stroke="#35d0f5" stroke-width="4"/></svg></div>
+        <h2>Técnico por um dia</h2>
+        <p>Atenda clientes cujo PC está com problema e descubra qual peça precisa de conserto.</p>
+        <span class="ir">Consertar <span class="tempo">· 2 min</span></span>
+      </a>
+      <a class="atividade" href="#caminho">
+        <div class="ilus"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M6 32h52" stroke="#353d6b" stroke-width="5"/><circle cx="8" cy="32" r="6" fill="#35d0f5"/><circle cx="32" cy="32" r="6" fill="#35d0f5"/><circle cx="56" cy="32" r="6" fill="#35d0f5"/><circle cx="20" cy="32" r="7" fill="#f5c542"/></svg></div>
+        <h2>Caminho do clique</h2>
+        <p>Veja o que acontece dentro do PC quando você clica, e quanto tempo isso leva.</p>
+        <span class="ir">Seguir o clique <span class="tempo">· 1 min</span></span>
+      </a>
+    </div>
+  </section>
+
+  <!-- MONTE SEU PC -->
+  <section id="v-montar" data-vista hidden>
+    <div id="m-escolha">
+      <h1 class="titulo">Qual jogo você quer jogar?</h1>
+      <p class="lead">Cada jogo tem os requisitos mínimos informados pela empresa que fez o jogo. Seu desafio é montar o PC mais barato que rode esse jogo. Depois, teste o mesmo PC nos outros jogos.</p>
+      <p class="fonte-dados" id="fonte-dados">Carregando jogos e peças…</p>
+      <div class="jogos" id="jogos"></div>
+      <p class="nota-fonte">Requisitos mínimos oficiais de Rockstar, Riot, Valve, Mojang e Epic. Preços dos jogos na Steam e lojas brasileiras em novembro de 2026.</p>
+    </div>
+    <div id="m-bancada" hidden>
+      <div class="bancada">
+        <aside class="ficha" aria-labelledby="f-titulo">
+          <span class="carimbo">Requisitos mínimos</span>
+          <h2 id="f-titulo"></h2>
+          <p class="sub" id="f-sub"></p>
+          <ul class="reqs" id="reqs"></ul>
+          <div class="contas">
+            <div>Peças <b id="gasto">R$ 0</b></div>
+            <div>Jogo <b id="custo-jogo">R$ 0</b></div>
+            <div>Total <b id="total">R$ 0</b></div>
+          </div>
+          <button class="botao" id="testar" type="button">Ligar e testar o PC</button>
+          <button class="trocar" id="trocar" type="button">Testar este PC em outro jogo</button>
+          <button class="trocar" id="zerar" type="button">Tirar todas as peças</button>
+          <p class="pequeno">A bolinha fica verde quando a peça colocada atende o jogo. "Força" é uma nota aproximada de desempenho em jogos, de 0 a 100. Preços à vista aproximados, pesquisados em lojas brasileiras entre setembro e novembro de 2026. Placa-mãe, gabinete e cooler não entram na conta.</p>
+        </aside>
+        <div class="lado">
+          <div id="resultado" aria-live="polite"></div>
+          <div class="gabinete">
+            <h3>Gabinete do seu PC</h3>
+            <div class="slots" id="slots"></div>
+          </div>
+          <div class="mesa-caixa" id="mesa-caixa">
+            <div id="caixa-monte" aria-hidden="true"></div>
+            <div>
+              <h3>A loja mandou uma caixa de peças</h3>
+              <p>A caixa tem várias opções de cada peça, com preços de verdade. Abra para começar a montar.</p>
+              <button class="botao" id="abrir" type="button">Abrir a caixa</button>
+            </div>
+          </div>
+          <div class="loja" id="loja" hidden>
+            <h3>Peças da caixa</h3>
+            <p>Toque em uma peça para colocar no PC ou arraste até o lugar dela. Toque de novo para tirar.</p>
+            <div class="filtros">
+              <input class="busca" id="busca" type="search" placeholder="Pesquisar peça, ex.: RTX, 16 GB, Ryzen" aria-label="Pesquisar peça">
+              <select class="ordem" id="ordem" aria-label="Ordenar peças">
+                <option value="barato">Mais barato primeiro</option>
+                <option value="caro">Mais caro primeiro</option>
+                <option value="forte">Mais forte primeiro</option>
+              </select>
+            </div>
+            <div class="chips" id="chips" role="group" aria-label="Filtrar por tipo"></div>
+            <p class="legenda-forca"><span><i></i>Força da peça</span><span><b></b>Mínimo que o jogo escolhido pede</span></p>
+            <p class="contagem" id="contagem"></p>
+            <div class="bandeja" id="bandeja"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TÉCNICO POR UM DIA -->
+  <section id="v-ligar" data-vista hidden>
+    <h1 class="titulo">Técnico por um dia</h1>
+    <p class="lead">Clientes vão trazer computadores com problema. Leia o que cada um conta e clique na peça que precisa de conserto.</p>
+    <div class="oficina">
+      <div class="gabinete-aberto">
+        <h2>PC aberto na bancada</h2>
+        <p>Clique na peça que você acha que está com problema.</p>
+        <div class="interior" id="interior"></div>
+      </div>
+      <div class="cliente" id="cliente" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- CAMINHO DO CLIQUE -->
+  <section id="v-caminho" data-vista hidden>
+    <h1 class="titulo">Caminho do clique</h1>
+    <p class="lead">Pense no computador como uma lanchonete. Cada peça tem uma função, assim como cada pessoa de uma cozinha. No fim, veja quanto tempo tudo levou.</p>
+    <div class="analogia" id="analogia"></div>
+    <div class="acoes-caminho" id="acoes-caminho" role="group" aria-label="Escolha o que fazer"></div>
+    <div class="trilha" id="trilha" aria-hidden="true"></div>
+    <div class="cartao" aria-live="polite">
+      <div class="pc-lado"><small>No computador</small><div class="peca-grande" id="c-peca"></div><p id="c-pc">Escolha uma ação acima para começar.</p></div>
+      <div class="cozinha"><small>Na lanchonete</small><div class="peca-grande" id="c-quem"></div><p id="c-coz">Cada passo aparece aqui comparado com a cozinha.</p></div>
+    </div>
+    <div class="navega">
+      <button class="botao leve" id="c-voltar" type="button" disabled>Voltar</button>
+      <span class="passo-n" id="c-n"></span>
+      <button class="botao" id="c-prox" type="button" disabled>Próximo passo</button>
+    </div>
+    <div class="resumo-tempo" id="resumo-tempo" aria-live="polite" hidden></div>
+  </section>
+
+  <!-- COMPETIÇÃO -->
+  <section id="v-painel" data-vista hidden>
+    <h1 class="titulo">Competição TechBox</h1>
+    <p class="lead">Quem monta os melhores PCs e conserta mais computadores? O ranking se atualiza sozinho.</p>
+    <p class="status-banco off" id="p-status" hidden></p>
+    <div id="p-conteudo">
+      <div class="kpis" id="p-kpis"></div>
+      <div class="painel-grade">
+        <section class="bloco largo"><h2>Ranking geral</h2><div class="tabela-rolagem" id="p-ranking"><p class="vazio-p">Carregando…</p></div></section>
+        <section class="bloco"><h2>Como ganhar pontos</h2>
+          <ul class="regras">
+            <li><b>Monte seu PC:</b> cada estrela vale 100 pontos. Jogo médio dá +50 e jogo difícil dá +100. Conta a sua melhor montagem de cada jogo.</li>
+            <li><b>Técnico por um dia:</b> cada cliente resolvido de primeira vale 50 pontos. Conta a sua melhor partida.</li>
+          </ul>
+        </section>
+        <section class="bloco"><h2>Acabou de acontecer</h2><div id="p-feito"></div></section>
+      </div>
+    </div>
+  </section>
+</main>
+<div class="aviso-toast" id="toast" role="status" hidden></div>
+<div class="cadastro-fundo" id="cadastro" role="dialog" aria-modal="true" aria-labelledby="cad-titulo" hidden>
+  <form class="cadastro-caixa" id="cad-form" novalidate>
+    <h2 id="cad-titulo">Quem vai jogar?</h2>
+    <p>Seu nome aparece no ranking da competição. O e-mail é opcional.</p>
+    <label>Nome <input id="cad-nome" maxlength="60" autocomplete="name" required></label>
+    <label>E-mail (opcional) <input id="cad-email" type="email" maxlength="120" autocomplete="email"></label>
+    <p class="erro-form" id="cad-erro" role="alert"></p>
+    <div class="linha-botoes">
+      <button class="botao" type="submit" id="cad-enviar">Cadastrar e jogar</button>
+      <button class="botao leve" type="button" id="cad-pular">Jogar sem cadastro</button>
+    </div>
+  </form>
+</div>
+<script>
+(() => {
+  'use strict';
+  const $ = (id) => document.getElementById(id);
+  const criar = (tag, classe, texto) => {
+    const el = document.createElement(tag);
+    if (classe) el.className = classe;
+    if (texto !== undefined) el.textContent = texto;
+    return el;
+  };
+  const reduzido = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const espera = (ms) => new Promise((r) => setTimeout(r, reduzido ? Math.min(ms, 150) : ms));
+  const reais = (v) => 'R$ ' + v.toLocaleString('pt-BR');
+  const embaralhar = (lista) => {
+    const a = [...lista];
+    for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+    return a;
+  };
+
+  // ---------- Desenhos ----------
+  const ICONE = {
+    ram: '<rect x="4" y="22" width="112" height="34" fill="#1f6f8b" stroke="#35d0f5" stroke-width="2"/><g fill="#0e1a24"><rect x="12" y="29" width="14" height="18"/><rect x="30" y="29" width="14" height="18"/><rect x="48" y="29" width="14" height="18"/><rect x="66" y="29" width="14" height="18"/><rect x="84" y="29" width="14" height="18"/></g><path d="M8 56h104" stroke="#35d0f5" stroke-width="5" stroke-dasharray="3 2"/>',
+    cpu: '<rect x="32" y="12" width="56" height="56" fill="#2a8fb0" stroke="#35d0f5" stroke-width="2"/><rect x="44" y="24" width="32" height="32" fill="#d9dee6"/><g stroke="#35d0f5" stroke-width="2"><path d="M40 12V5M50 12V5M60 12V5M70 12V5M80 12V5M40 68v7M50 68v7M60 68v7M70 68v7M80 68v7M32 22h-7M32 34h-7M32 46h-7M32 58h-7M88 22h7M88 34h7M88 46h7M88 58h7"/></g>',
+    ssd: '<rect x="6" y="28" width="108" height="24" fill="#1f6f8b" stroke="#35d0f5" stroke-width="2"/><g fill="#0e1a24"><rect x="18" y="33" width="22" height="14"/><rect x="46" y="33" width="22" height="14"/><rect x="74" y="33" width="14" height="14"/></g><path d="M6 32v16" stroke="#35d0f5" stroke-width="5"/>',
+    gpu: '<rect x="6" y="14" width="108" height="46" fill="#2a303c" stroke="#35d0f5" stroke-width="2"/><g fill="#0e1a24" stroke="#d9dee6" stroke-width="2"><circle cx="36" cy="37" r="17"/><circle cx="84" cy="37" r="17"/></g><g stroke="#d9dee6" stroke-width="2"><path d="M36 22v30M21 37h30M84 22v30M69 37h30"/></g><path d="M20 60v8h60v-8" fill="#35d0f5"/>',
+    psu: '<rect x="22" y="6" width="76" height="68" fill="#2a303c" stroke="#35d0f5" stroke-width="2"/><circle cx="60" cy="40" r="26" fill="#0e1a24" stroke="#d9dee6" stroke-width="2"/><g stroke="#d9dee6" stroke-width="2"><path d="M60 14v52M34 40h52M42 22l36 36M78 22L42 58"/></g>',
+    entrada: '<rect x="4" y="38" width="80" height="30" rx="3" fill="#2a303c" stroke="#35d0f5" stroke-width="2"/><g fill="#d9dee6"><rect x="11" y="44" width="9" height="6"/><rect x="24" y="44" width="9" height="6"/><rect x="37" y="44" width="9" height="6"/><rect x="50" y="44" width="9" height="6"/><rect x="63" y="44" width="14" height="6"/><rect x="18" y="56" width="50" height="6"/></g><rect x="92" y="30" width="24" height="38" rx="12" fill="#2a303c" stroke="#35d0f5" stroke-width="2"/><path d="M104 30v13" stroke="#35d0f5" stroke-width="2"/>',
+    cooler: '<rect x="20" y="52" width="80" height="20" fill="#2a303c" stroke="#35d0f5" stroke-width="2"/><g stroke="#35d0f5" stroke-width="2"><path d="M28 52v20M38 52v20M48 52v20M58 52v20M68 52v20M78 52v20M88 52v20"/></g><circle cx="60" cy="28" r="24" fill="#0e1a24" stroke="#d9dee6" stroke-width="2"/><g fill="#6c7a91"><path d="M60 28 52 8a20 20 0 0 1 14 2z"/><path d="M60 28l20-6a20 20 0 0 1-2 14z"/><path d="M60 28l8 20a20 20 0 0 1-14-2z"/><path d="M60 28 40 34a20 20 0 0 1 2-14z"/></g>',
+    cabo: '<path d="M6 60c24 0 30-30 54-30h20" fill="none" stroke="#d9dee6" stroke-width="5"/><rect x="78" y="20" width="30" height="20" rx="3" fill="#2a303c" stroke="#35d0f5" stroke-width="2"/><rect x="108" y="24" width="8" height="12" fill="#35d0f5"/>',
+    bateria: '<circle cx="60" cy="40" r="28" fill="#c9d1da" stroke="#35d0f5" stroke-width="2"/><circle cx="60" cy="40" r="20" fill="none" stroke="#8a94a3" stroke-width="2"/><text x="60" y="45" text-anchor="middle" font-size="13" font-weight="700" fill="#2a303c" font-family="Arial">CR2032</text>',
+    monitor: '<rect x="18" y="6" width="84" height="54" rx="3" fill="#0e1a24" stroke="#35d0f5" stroke-width="2"/><rect x="25" y="13" width="70" height="40" fill="#1f6f8b"/><path d="M52 60v10h16V60M40 72h40" stroke="#35d0f5" stroke-width="3" fill="none"/>',
+    placa: '<rect x="14" y="6" width="92" height="68" fill="#1f5d4c" stroke="#35d0f5" stroke-width="2"/><rect x="24" y="14" width="26" height="26" fill="#2a303c" stroke="#d9dee6" stroke-width="2"/><g fill="#0e1a24"><rect x="60" y="14" width="6" height="30"/><rect x="70" y="14" width="6" height="30"/></g><rect x="24" y="52" width="56" height="8" fill="#0e1a24"/><circle cx="92" cy="58" r="7" fill="#c9d1da"/><g stroke="#3ddc84" stroke-width="2"><path d="M50 27h10M37 40v12M76 44v8"/></g>',
+    rede: '<rect x="10" y="44" width="100" height="24" fill="#1f6f8b" stroke="#35d0f5" stroke-width="2"/><rect x="20" y="51" width="20" height="10" fill="#0e1a24"/><path d="M10 68h40" stroke="#35d0f5" stroke-width="5" stroke-dasharray="3 2"/><g fill="none" stroke="#d9dee6" stroke-width="3" stroke-linecap="round"><path d="M70 30a12 12 0 0 1 20 0"/><path d="M63 22a22 22 0 0 1 34 0"/><path d="M56 14a32 32 0 0 1 48 0"/></g><circle cx="80" cy="36" r="4" fill="#d9dee6"/>',
+    perif: '<rect x="4" y="34" width="78" height="32" rx="3" fill="#2a303c" stroke="#35d0f5" stroke-width="2"/><g fill="#d9dee6"><rect x="10" y="40" width="9" height="6"/><rect x="22" y="40" width="9" height="6"/><rect x="34" y="40" width="9" height="6"/><rect x="46" y="40" width="9" height="6"/><rect x="58" y="40" width="18" height="6"/><rect x="18" y="52" width="50" height="7"/></g><rect x="90" y="22" width="26" height="44" rx="13" fill="#2a303c" stroke="#35d0f5" stroke-width="2"/><path d="M103 22v15M90 37h26" stroke="#35d0f5" stroke-width="2"/><path d="M103 22c0-10-10-14-20-12" fill="none" stroke="#d9dee6" stroke-width="2"/>',
+  };
+  const svg = (k) => `<svg viewBox="0 0 120 80" aria-hidden="true">${ICONE[k]}</svg>`;
+
+  function caixa() {
+    const wrap = criar('div', 'cena');
+    wrap.innerHTML = `<div class="sombra"></div><div class="cubo"><div class="face base"></div><div class="face fundo"></div><div class="face esquerda"></div><div class="face direita"></div><div class="brilho"></div><div class="face frente"><span class="fragil">FRÁGIL</span><span class="interrogacao">?</span></div><div class="tampa"><div class="aba esq"></div><div class="aba dir"></div></div></div>`;
+    return wrap;
+  }
+
+  // ---------- Som ----------
+  const som = (() => {
+    let ctx = null, ligado = true;
+    try { ligado = localStorage.getItem('tb-som') !== 'off'; } catch (_) {}
+    const ini = () => {
+      if (!ligado) return null;
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      if (!ctx) ctx = new AC();
+      if (ctx.state === 'suspended') ctx.resume();
+      return ctx;
+    };
+    const tom = (f, t0, dur, tipo = 'triangle', vol = .16) => {
+      const c = ini(); if (!c) return;
+      const t = c.currentTime + t0, o = c.createOscillator(), g = c.createGain();
+      o.type = tipo; o.frequency.value = f;
+      g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + .01); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+      o.connect(g).connect(c.destination); o.start(t); o.stop(t + dur + .02);
+    };
+    const ruido = (dur, de, para, vol = .25, t0 = 0) => {
+      const c = ini(); if (!c) return;
+      const t = c.currentTime + t0, n = Math.floor(c.sampleRate * dur), b = c.createBuffer(1, n, c.sampleRate), d = b.getChannelData(0);
+      for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
+      const s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain();
+      s.buffer = b; f.type = 'bandpass'; f.frequency.setValueAtTime(de, t); f.frequency.exponentialRampToValueAtTime(para, t + dur);
+      g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+      s.connect(f).connect(g).connect(c.destination); s.start(t);
+    };
+    return {
+      get ligado() { return ligado; },
+      alternar() { ligado = !ligado; try { localStorage.setItem('tb-som', ligado ? 'on' : 'off'); } catch (_) {} },
+      preparar: ini,
+      clique() { tom(660, 0, .08, 'square', .05); },
+      encaixe() { tom(523, 0, .1); tom(784, .06, .14); },
+      erro() { tom(150, 0, .22, 'sawtooth', .14); tom(115, .1, .26, 'sawtooth', .14); },
+      chacoalhar() { for (let i = 0; i < 5; i++) ruido(.1, 240, 120, .35, i * .15); },
+      abrir() { ruido(.35, 900, 5000, .3); tom(96, .3, .22, 'sine', .3); },
+      ligar() { ruido(1.2, 120, 600, .08); },
+      bipes() { [0, .45, .9].forEach((t) => tom(880, t, .3, 'square', .1)); },
+      vitoria() { [523, 659, 784, 1047].forEach((f, i) => tom(f, i * .12, i === 3 ? .6 : .2)); },
+      bip(n) { for (let i = 0; i < n; i++) tom(880, i * .4, .25, 'square', .1); },
+      passo(i) { tom([392, 440, 494, 587, 659, 784, 880][i % 7], 0, .18); },
+    };
+  })();
+  const pintarSom = () => { $('som').textContent = som.ligado ? 'Som ligado' : 'Som desligado'; $('som').setAttribute('aria-pressed', String(som.ligado)); };
+  $('som').addEventListener('click', () => { som.alternar(); pintarSom(); som.clique(); });
+  pintarSom();
+
+  let timerToast;
+  function toast(texto) {
+    const t = $('toast');
+    t.textContent = texto;
+    t.hidden = false;
+    clearTimeout(timerToast);
+    timerToast = setTimeout(() => { t.hidden = true; }, 3200);
+  }
+
+  // ---------- Rotas ----------
+  const ROTAS = ['inicio', 'montar', 'ligar', 'caminho', 'painel'];
+  function mostrarRota() {
+    const r = location.hash.slice(1);
+    const rota = ROTAS.includes(r) ? r : 'inicio';
+    document.querySelectorAll('[data-vista]').forEach((s) => { s.hidden = s.id !== 'v-' + rota; });
+    document.querySelectorAll('.menu a').forEach((a) => {
+      if (a.dataset.rota === rota) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    window.scrollTo(0, 0);
+  }
+  window.addEventListener('hashchange', mostrarRota);
+
+  // =====================================================
+  // MONTE SEU PC (peças, preços e requisitos reais)
+  // =====================================================
+  // Para usar fotos das peças: crie a pasta img/ ao lado do index.html,
+  // salve as fotos com o id da peça (ex.: img/gpu-5060.jpg) e troque para true.
+  const USAR_FOTOS = false;
+
+  const CATS = {
+    cpu: { nome: 'Processador', vazio: 'Coloque o processador', serve: 'É o cérebro: faz todas as contas. Cada núcleo é como um cozinheiro; mais núcleos, mais tarefas ao mesmo tempo. Alguns têm vídeo integrado e dispensam a placa de vídeo em jogos leves.' },
+    ram: { nome: 'Memória', vazio: 'Coloque a memória', serve: 'É a bancada de trabalho: guarda o que está aberto agora. Bancada maior, mais coisas abertas sem travar. Apaga tudo quando o PC desliga.' },
+    gpu: { nome: 'Placa de vídeo', vazio: 'Coloque a placa de vídeo', serve: 'Desenha as imagens do jogo. Jogos pesados precisam de uma placa forte. Jogos leves rodam com o vídeo integrado do processador, se ele tiver.' },
+    ssd: { nome: 'Armazenamento', vazio: 'Coloque o SSD', serve: 'É a despensa: guarda o Windows e os jogos, mesmo com o PC desligado.' },
+    psu: { nome: 'Fonte', vazio: 'Coloque a fonte', serve: 'Leva a energia da tomada para todas as peças. Placa de vídeo mais forte pede fonte com mais watts.' },
+  };
+  const ORDEM = ['cpu', 'ram', 'gpu', 'ssd', 'psu'];
+
+  // Preços à vista (Pix) aproximados, pesquisados em lojas brasileiras entre set. e nov. de 2026.
+  // forca = nota aproximada de desempenho em jogos, de 0 a 100 (RTX 5070 = 100).
+  const PECAS = [
+    { id: 'cpu-4500', cat: 'cpu', nome: 'AMD Ryzen 5 4500', spec: '6 núcleos, sem vídeo integrado', nucleos: 6, threads: 12, video: 0, forca: 45, preco: 529 },
+    { id: 'cpu-5500', cat: 'cpu', nome: 'AMD Ryzen 5 5500', spec: '6 núcleos, sem vídeo integrado', nucleos: 6, threads: 12, video: 0, forca: 52, preco: 540 },
+    { id: 'cpu-12100f', cat: 'cpu', nome: 'Intel Core i3-12100F', spec: '4 núcleos, sem vídeo integrado', nucleos: 4, threads: 8, video: 0, forca: 55, preco: 729 },
+    { id: 'cpu-5600gt', cat: 'cpu', nome: 'AMD Ryzen 5 5600GT', spec: '6 núcleos, com vídeo integrado', nucleos: 6, threads: 12, video: 6, forca: 56, preco: 1032, selo: 'Vídeo integrado' },
+    { id: 'cpu-12400f', cat: 'cpu', nome: 'Intel Core i5-12400F', spec: '6 núcleos, sem vídeo integrado', nucleos: 6, threads: 12, video: 0, forca: 68, preco: 1102 },
+    { id: 'cpu-5700', cat: 'cpu', nome: 'AMD Ryzen 7 5700', spec: '8 núcleos, sem vídeo integrado', nucleos: 8, threads: 16, video: 0, forca: 64, preco: 1106 },
+    { id: 'cpu-5700x', cat: 'cpu', nome: 'AMD Ryzen 7 5700X', spec: '8 núcleos, sem vídeo integrado', nucleos: 8, threads: 16, video: 0, forca: 72, preco: 1199 },
+    { id: 'ram-8', cat: 'ram', nome: 'Kingston Fury 8 GB', spec: 'DDR4, 1 pente', gb: 8, preco: 650 },
+    { id: 'ram-16p', cat: 'ram', nome: 'Puskill 16 GB', spec: 'DDR4, 1 pente, marca de entrada', gb: 16, preco: 700 },
+    { id: 'ram-16', cat: 'ram', nome: 'Kingston Fury 16 GB', spec: 'DDR4, 1 pente', gb: 16, preco: 1200 },
+    { id: 'ram-32', cat: 'ram', nome: 'Corsair Vengeance 32 GB', spec: 'DDR4, 2 pentes de 16 GB', gb: 32, preco: 2750 },
+    { id: 'gpu-none', cat: 'gpu', nome: 'Sem placa de vídeo', spec: 'Usa o vídeo integrado do processador, se ele tiver', forca: 0, fonte: 0, preco: 0 },
+    { id: 'gpu-3050', cat: 'gpu', nome: 'GeForce RTX 3050', spec: '6 GB, pede fonte de 550 W', forca: 26, fonte: 550, preco: 1400 },
+    { id: 'gpu-7600', cat: 'gpu', nome: 'Radeon RX 7600', spec: '8 GB, pede fonte de 550 W', forca: 48, fonte: 550, preco: 2000 },
+    { id: 'gpu-5060', cat: 'gpu', nome: 'GeForce RTX 5060', spec: '8 GB, pede fonte de 550 W', forca: 55, fonte: 550, preco: 2700 },
+    { id: 'gpu-5060ti', cat: 'gpu', nome: 'GeForce RTX 5060 Ti', spec: '8 GB, pede fonte de 600 W', forca: 64, fonte: 600, preco: 3200 },
+    { id: 'gpu-5060ti16', cat: 'gpu', nome: 'GeForce RTX 5060 Ti 16 GB', spec: '16 GB, pede fonte de 600 W', forca: 66, fonte: 600, preco: 4500 },
+    { id: 'gpu-5070', cat: 'gpu', nome: 'GeForce RTX 5070', spec: '12 GB, pede fonte de 650 W', forca: 100, fonte: 650, preco: 5300 },
+    { id: 'ssd-480', cat: 'ssd', nome: 'SSD SATA 480 GB', spec: 'Kingston A400', gb: 480, preco: 200 },
+    { id: 'ssd-500', cat: 'ssd', nome: 'SSD NVMe 500 GB', spec: 'Mais rápido que o SATA', gb: 500, preco: 325 },
+    { id: 'ssd-1000', cat: 'ssd', nome: 'SSD NVMe 1 TB', spec: 'Kingston NV3', gb: 1000, preco: 575 },
+    { id: 'ssd-2000', cat: 'ssd', nome: 'SSD NVMe 2 TB', spec: 'Para quem tem muitos jogos', gb: 2000, preco: 1150 },
+    { id: 'psu-500', cat: 'psu', nome: 'Fonte 500 W', spec: 'Pcfort, 80 Plus Bronze', w: 500, preco: 363 },
+    { id: 'psu-550', cat: 'psu', nome: 'Fonte 550 W', spec: 'MSI MAG A550BN, 80 Plus Bronze', w: 550, preco: 317 },
+    { id: 'psu-650', cat: 'psu', nome: 'Fonte 650 W', spec: 'Corsair CX650, 80 Plus Bronze', w: 650, preco: 350 },
+  ];
+  const precoTexto = (v) => v === 0 ? 'Grátis' : reais(v);
+
+  // Capas originais (desenhos), sem logos dos jogos.
+  function capa(id) {
+    if (id === 'valorant') return '<svg viewBox="0 0 300 110" preserveAspectRatio="xMidYMid slice"><rect width="300" height="110" fill="#1b1d2b"/><path d="M0 110 120 0h50L60 110z" fill="#ff4655"/><path d="M90 110 210 0h25L115 110z" fill="#ff4655" opacity=".55"/><path d="M200 110 300 18v92z" fill="#ece8e1"/></svg>';
+    if (id === 'fortnite') return '<svg viewBox="0 0 300 110" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="cf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5b2fd6"/><stop offset="1" stop-color="#3fb4ff"/></linearGradient></defs><rect width="300" height="110" fill="url(#cf)"/><g fill="#fff" opacity=".85"><ellipse cx="60" cy="88" rx="44" ry="12"/><ellipse cx="240" cy="96" rx="60" ry="14"/></g><path d="M168 24q32-24 64 0z" fill="#ffd23f"/><path d="M170 24 200 56M230 24 200 56" stroke="#fff" stroke-width="2"/><circle cx="200" cy="60" r="7" fill="#1b1d2b"/></svg>';
+    if (id === 'cs2') {
+      let t = '';
+      for (let y = 0; y < 110; y += 22) for (let x = (y / 22) % 2 ? -25 : 0; x < 300; x += 50) t += `<rect x="${x + 2}" y="${y + 2}" width="46" height="18" fill="#b57a33"/>`;
+      return `<svg viewBox="0 0 300 110" preserveAspectRatio="xMidYMid slice"><rect width="300" height="110" fill="#8f5c22"/>${t}<g stroke="#39ff6a" stroke-width="4"><path d="M150 30v16M150 64v16M124 55h16M160 55h16"/></g><circle cx="150" cy="55" r="3" fill="#39ff6a"/></svg>`;
+    }
+    if (id === 'minecraft') {
+      let t = '';
+      for (let x = 0; x < 300; x += 20) {
+        const h = 50 + ((x * 7) % 3) * 10;
+        t += `<rect x="${x}" y="${h}" width="20" height="10" fill="#5fa13a"/>`;
+        for (let y = h + 10; y < 110; y += 10) t += `<rect x="${x}" y="${y}" width="20" height="10" fill="${(x + y) % 30 ? '#7a5230' : '#6a4626'}"/>`;
+      }
+      return `<svg viewBox="0 0 300 110" preserveAspectRatio="xMidYMid slice"><rect width="300" height="110" fill="#7ec8f2"/><rect x="230" y="12" width="26" height="26" fill="#fff6a8"/>${t}</svg>`;
+    }
+    return '<svg viewBox="0 0 300 110" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="cg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff7a3d"/><stop offset=".6" stop-color="#d23a7a"/><stop offset="1" stop-color="#3a1f5c"/></linearGradient></defs><rect width="300" height="110" fill="url(#cg)"/><circle cx="150" cy="78" r="30" fill="#ffd27a"/><g fill="#1a1030"><rect x="10" y="60" width="26" height="50"/><rect x="40" y="40" width="20" height="70"/><rect x="64" y="70" width="30" height="40"/><rect x="200" y="50" width="22" height="60"/><rect x="226" y="30" width="18" height="80"/><rect x="248" y="64" width="40" height="46"/><path d="M118 110V70" stroke="#1a1030" stroke-width="4"/><path d="M118 72q-18-6-26 4M118 72q18-8 26 2M118 72q-6-14-18-16M118 72q8-14 20-14" stroke="#1a1030" stroke-width="4" fill="none"/></g></svg>';
+  }
+
+  // Requisitos mínimos oficiais. forca traduz a peça exigida para a mesma nota das peças da loja.
+  const JOGOS = [
+    { id: 'valorant', nome: 'Valorant', nivel: ['f', 'Fácil'], preco: 0, loja: 'Grátis na Riot', desc: 'Tiro tático em equipe.',
+      cpu: { texto: 'Intel Core 2 Duo E8400 ou AMD Athlon 200GE', nucleos: 2, threads: 2, forca: 5 },
+      ram: { gb: 4 }, video: { texto: 'Intel HD 4000 ou Radeon R5 200', forca: 2 }, espaco: null },
+    { id: 'fortnite', nome: 'Fortnite', nivel: ['f', 'Fácil'], preco: 0, loja: 'Grátis na Epic', desc: 'Battle royale com construção.',
+      cpu: { texto: 'Intel Core i3-3225', nucleos: 2, threads: 4, forca: 10 },
+      ram: { gb: 8 }, video: { texto: 'Intel HD 4000 ou AMD Vega 8', forca: 3 }, espaco: null },
+    { id: 'cs2', nome: 'Counter-Strike 2', nivel: ['f', 'Fácil'], preco: 0, loja: 'Grátis na Steam', desc: 'Tiro competitivo clássico.',
+      cpu: { texto: '4 threads, como o Intel Core i5 750', nucleos: 2, threads: 4, forca: 9 },
+      ram: { gb: 8 }, video: { texto: '1 GB de memória de vídeo e DirectX 11', forca: 3 }, espaco: 85 },
+    { id: 'minecraft', nome: 'Minecraft', nivel: ['m', 'Médio'], preco: 99, loja: 'R$ 99 (Java e Bedrock)', desc: 'Construir mundos de blocos.',
+      cpu: { texto: '4 núcleos, como Core i3-10100 ou Ryzen 3 3100', nucleos: 4, threads: 4, forca: 35 },
+      ram: { gb: 8, gbIntegrado: 12 }, video: { texto: 'GTX 950, RX 460 ou vídeo integrado com Vulkan 1.3', forca: 6 }, espaco: null },
+    { id: 'gta', nome: 'GTA V', nivel: ['d', 'Difícil'], preco: 149.9, loja: 'R$ 149,90 na Steam', desc: 'Mundo aberto em Los Santos (versão Enhanced).',
+      cpu: { texto: 'Intel Core i7-4770 ou AMD FX-9590', nucleos: 4, threads: 4, forca: 25 },
+      ram: { gb: 8 }, video: { texto: 'GTX 1630 (4 GB) ou RX 6400 (4 GB)', forca: 10 }, espaco: 105 },
+  ];
+
+  const M = { jogo: null, pc: {}, aberta: false, filtro: 'todas', busca: '', ordem: 'barato' };
+  const gasto = (pc) => ORDEM.reduce((s, c) => s + (pc[c] ? pc[c].preco : 0), 0);
+  const usaIntegrado = (pc) => pc.gpu && pc.gpu.id === 'gpu-none';
+  const forcaVideo = (pc) => !pc.gpu ? 0 : usaIntegrado(pc) ? (pc.cpu ? pc.cpu.video : 0) : pc.gpu.forca;
+  const ramPedida = (jogo, pc) => usaIntegrado(pc) && jogo.ram.gbIntegrado ? jogo.ram.gbIntegrado : jogo.ram.gb;
+  const tam = (gb) => gb >= 1000 ? gb / 1000 + ' TB' : gb + ' GB';
+
+  function avaliar(jogo, pc) {
+    const t = {};
+    const falta = (txt) => ({ ok: false, falta: true, texto: `Falta colocar ${txt}.` });
+    if (!pc.cpu) t.cpu = falta('o processador');
+    else if (pc.cpu.forca >= jogo.cpu.forca && pc.cpu.nucleos >= jogo.cpu.nucleos && pc.cpu.threads >= jogo.cpu.threads) t.cpu = { ok: true, texto: `Passou: força ${pc.cpu.forca} (o jogo pede ${jogo.cpu.forca}).` };
+    else t.cpu = { ok: false, texto: `Fraco: força ${pc.cpu.forca} (o jogo pede ${jogo.cpu.forca}).` };
+
+    const precisa = ramPedida(jogo, pc);
+    if (!pc.ram) t.ram = falta('a memória');
+    else if (pc.ram.gb >= precisa) t.ram = { ok: true, texto: `Passou: ${pc.ram.gb} GB (o jogo pede ${precisa} GB).` };
+    else if (precisa !== jogo.ram.gb) t.ram = { ok: false, texto: `Com vídeo integrado, o ${jogo.nome} pede ${precisa} GB, porque o vídeo usa um pedaço da memória. Memória vem em 8, 16 e 32 GB: a primeira que passa de ${precisa} é 16.` };
+    else t.ram = { ok: false, texto: `Memória insuficiente: ${pc.ram.gb} GB (o jogo pede ${precisa} GB).` };
+
+    const fv = forcaVideo(pc);
+    if (!pc.gpu) t.gpu = falta('a placa de vídeo, ou escolher "Sem placa de vídeo"');
+    else if (usaIntegrado(pc) && !pc.cpu) t.gpu = { ok: false, falta: true, texto: 'Sem placa de vídeo, o processador precisa ter vídeo integrado. Coloque um processador.' };
+    else if (usaIntegrado(pc) && !pc.cpu.video) t.gpu = { ok: false, texto: `Sem imagem: o ${pc.cpu.nome} não tem vídeo integrado. Troque por um processador com vídeo integrado ou coloque uma placa de vídeo.` };
+    else if (fv >= jogo.video.forca) t.gpu = { ok: true, texto: usaIntegrado(pc) ? `Passou com o vídeo integrado (força ${fv}, o jogo pede ${jogo.video.forca}). Economizou a placa!` : `Passou: força ${fv} (o jogo pede ${jogo.video.forca}).` };
+    else t.gpu = { ok: false, texto: usaIntegrado(pc) ? `O vídeo integrado é fraco (força ${fv}, o jogo pede ${jogo.video.forca}). Este jogo precisa de placa de vídeo.` : `Fraca: força ${fv} (o jogo pede ${jogo.video.forca}).` };
+
+    if (!pc.ssd) t.ssd = falta('o armazenamento');
+    else t.ssd = { ok: true, texto: jogo.espaco ? `Passou: cabem ${tam(pc.ssd.gb)} e o jogo ocupa ${jogo.espaco} GB.` : 'Passou: qualquer SSD da loja tem espaço para este jogo.' };
+
+    const rec = pc.gpu ? pc.gpu.fonte : 0;
+    if (!pc.psu) t.psu = falta('a fonte');
+    else if (pc.psu.w >= rec) t.psu = { ok: true, texto: rec ? `Passou: a placa pede ${rec} W e a fonte tem ${pc.psu.w} W.` : `Passou: sem placa de vídeo, ${pc.psu.w} W são mais que suficientes.` };
+    else t.psu = { ok: false, texto: `Fraca: a ${pc.gpu.nome} pede fonte de ${rec} W e esta tem ${pc.psu.w} W.` };
+    return t;
+  }
+
+  function maisBarato(jogo, aceita = () => true) {
+    const por = (c) => PECAS.filter((p) => p.cat === c);
+    let melhor = null;
+    for (const cpu of por('cpu')) for (const ram of por('ram')) for (const gpu of por('gpu')) for (const ssd of por('ssd')) for (const psu of por('psu')) {
+      const pc = { cpu, ram, gpu, ssd, psu };
+      if (!aceita(pc) || (melhor && gasto(pc) >= gasto(melhor))) continue;
+      const t = avaliar(jogo, pc);
+      if (ORDEM.every((c) => t[c].ok)) melhor = pc;
+    }
+    return melhor;
+  }
+
+  function pintarJogos() {
+    $('jogos').replaceChildren(...JOGOS.map((j) => {
+      const b = criar('button', 'jogo');
+      b.type = 'button';
+      const c = criar('div', 'capa');
+      c.innerHTML = capa(j.id);
+      b.append(c, criar('span', 'nivel ' + j.nivel[0], j.nivel[1]), criar('h3', '', j.nome), criar('p', '', j.desc), criar('p', 'preco-jogo', j.loja));
+      b.addEventListener('click', () => { som.clique(); escolherJogo(j); });
+      return b;
+    }));
+  }
+
+  function escolherJogo(j) {
+    M.jogo = j;
+    $('m-escolha').hidden = true;
+    $('m-bancada').hidden = false;
+    $('f-titulo').textContent = j.nome;
+    $('f-sub').textContent = `${j.desc} Preço do jogo: ${j.loja}.`;
+    $('resultado').replaceChildren();
+    $('mesa-caixa').hidden = M.aberta;
+    $('loja').hidden = !M.aberta;
+    if (!M.aberta) { $('caixa-monte').replaceChildren(caixa()); $('abrir').disabled = false; }
+    mudou();
+    window.scrollTo(0, 0);
+  }
+
+  function linhasReq() {
+    const j = M.jogo;
+    return [
+      { cat: 'cpu', titulo: 'Processador', oficial: j.cpu.texto, minimo: `Força mínima: ${j.cpu.forca}` },
+      { cat: 'ram', titulo: 'Memória', oficial: j.ram.gbIntegrado ? `${j.ram.gb} GB com placa de vídeo, ou ${j.ram.gbIntegrado} GB usando vídeo integrado` : `${j.ram.gb} GB` },
+      { cat: 'gpu', titulo: 'Vídeo', oficial: j.video.texto, minimo: `Força mínima: ${j.video.forca}` },
+      { cat: 'ssd', titulo: 'Espaço', oficial: j.espaco ? `${j.espaco} GB` + (j.id === 'gta' ? ', em SSD' : '') : 'Não informado pela empresa' },
+      { cat: 'psu', titulo: 'Fonte', oficial: 'A potência que a placa de vídeo pede',
+        minimo: !M.pc.gpu ? 'Coloque a placa de vídeo para ver quantos watts precisa'
+          : M.pc.gpu.fonte ? `A ${M.pc.gpu.nome} pede no mínimo ${M.pc.gpu.fonte} W`
+          : 'Sem placa de vídeo: qualquer fonte da loja serve' },
+    ];
+  }
+
+  function pintarFicha() {
+    const t = avaliar(M.jogo, M.pc);
+    $('reqs').replaceChildren(...linhasReq().map((l) => {
+      const li = criar('li');
+      li.append(criar('b', '', l.titulo), criar('span', 'oficial', l.oficial));
+      if (l.minimo) li.append(criar('span', 'minimo', l.minimo));
+      const r = t[l.cat];
+      if (M.pc[l.cat] && !r.falta) {
+        li.className = r.ok ? 'ok' : 'ruim';
+        li.append(criar('span', 'exp', r.texto));
+      }
+      return li;
+    }));
+    const g = gasto(M.pc);
+    $('gasto').textContent = reais(g);
+    $('custo-jogo').textContent = M.jogo.preco ? reais(M.jogo.preco) : 'Grátis';
+    $('total').textContent = reais(Math.round((g + M.jogo.preco) * 100) / 100);
+    return t;
+  }
+
+  function desenhoPeca(p) {
+    if (USAR_FOTOS && p.id !== 'gpu-none') {
+      const img = document.createElement('img');
+      img.src = `img/${p.id}.jpg`;
+      img.alt = '';
+      img.onerror = () => { const d = criar('div'); d.innerHTML = svg(p.cat); img.replaceWith(d.firstChild); };
+      return img;
+    }
+    const d = criar('div'); d.innerHTML = svg(p.cat); return d.firstChild;
+  }
+
+  function pintarSlots() {
+    const t = avaliar(M.jogo, M.pc);
+    $('slots').replaceChildren(...ORDEM.map((c) => {
+      const p = M.pc[c];
+      const s = criar('div', 'slot' + (p ? ' cheio' : ''));
+      s.dataset.cat = c;
+      if (p && !t[c].ok && !t[c].falta) s.classList.add('ruim-teste');
+      const cab = criar('span', 'cat', CATS[c].nome);
+      if (p) cab.append(criar('span', 'check', '✓'));
+      s.append(cab);
+      if (p) s.append(desenhoPeca(p), criar('span', 'nome', p.nome), criar('span', 'info', precoTexto(p.preco)));
+      else s.append(criar('span', 'vazio', CATS[c].vazio), criar('span', 'info', ' '), criar('span', 'info', ' '));
+      const acoes = criar('div', 'acoes');
+      const q = criar('button', 'mini', 'Para que serve?');
+      q.type = 'button';
+      q.setAttribute('aria-expanded', 'false');
+      q.addEventListener('click', () => {
+        const aberto = s.querySelector('.dica');
+        if (aberto) { aberto.remove(); q.setAttribute('aria-expanded', 'false'); return; }
+        s.append(criar('p', 'dica', CATS[c].serve));
+        q.setAttribute('aria-expanded', 'true');
+      });
+      acoes.append(q);
+      if (p) {
+        const tirar = criar('button', 'mini', 'Tirar');
+        tirar.type = 'button';
+        tirar.addEventListener('click', () => remover(c));
+        acoes.append(tirar);
+      }
+      s.append(acoes);
+      return s;
+    }));
+  }
+
+  function mudou() {
+    $('resultado').replaceChildren();
+    pintarFicha();
+    pintarSlots();
+    pintarLoja();
+  }
+  function colocar(p) { M.pc[p.cat] = p; som.encaixe(); mudou(); }
+  function remover(c) { delete M.pc[c]; som.clique(); mudou(); }
+
+  async function voar(origem, destino, cat) {
+    if (reduzido) return;
+    const a = origem.getBoundingClientRect(), b = destino.getBoundingClientRect();
+    const el = criar('div', 'voando');
+    el.innerHTML = svg(cat);
+    el.style.left = a.left + 'px';
+    el.style.top = a.top + 'px';
+    document.body.append(el);
+    await el.animate([
+      { transform: 'translate(0, 0)' },
+      { transform: `translate(${b.left + b.width / 2 - 50 - a.left}px, ${b.top + b.height / 2 - 35 - a.top}px) scale(.8)` },
+    ], { duration: 380, easing: 'cubic-bezier(.4, 0, .3, 1)' }).finished.catch(() => {});
+    el.remove();
+  }
+
+  function tentarSoltar(p, slot) {
+    if (slot.dataset.cat !== p.cat) {
+      som.erro();
+      toast(`Essa peça vai no espaço "${CATS[p.cat].nome}", não aqui.`);
+      slot.classList.remove('errou'); void slot.offsetWidth; slot.classList.add('errou');
+      return;
+    }
+    colocar(p);
+  }
+
+  // Barra de força da peça, com a marca laranja do mínimo do jogo escolhido.
+  function barraDa(p) {
+    const j = M.jogo;
+    let rotulo, valor, minimo = null;
+    if (p.cat === 'cpu') { rotulo = `Força ${p.forca}`; valor = p.forca; minimo = j.cpu.forca; }
+    else if (p.cat === 'gpu') {
+      if (p.id === 'gpu-none') return null;
+      rotulo = `Força ${p.forca}`; valor = p.forca; minimo = j.video.forca;
+    } else if (p.cat === 'ram') { rotulo = `Tamanho ${p.gb} GB`; valor = p.gb / 32 * 100; minimo = j.ram.gb / 32 * 100; }
+    else if (p.cat === 'psu') { rotulo = M.pc.gpu && M.pc.gpu.fonte ? `Potência ${p.w} W (sua placa pede ${M.pc.gpu.fonte} W)` : `Potência ${p.w} W`; valor = (p.w - 300) / 400 * 100; minimo = M.pc.gpu && M.pc.gpu.fonte ? (M.pc.gpu.fonte - 300) / 400 * 100 : null; }
+    else { rotulo = `Espaço ${tam(p.gb)}`; valor = p.gb / 2000 * 100; minimo = j.espaco ? j.espaco / 2000 * 100 : null; }
+    const box = criar('div', 'forca');
+    box.append(criar('span', '', rotulo));
+    const b = criar('div', 'barra');
+    const i = criar('i'); i.style.width = Math.max(2, Math.min(100, valor)) + '%';
+    b.append(i);
+    if (minimo !== null) { const m = criar('b'); m.style.left = Math.min(100, minimo) + '%'; b.append(m); }
+    box.append(b);
+    return box;
+  }
+
+  function criarPeca(p) {
+    const b = criar('button', 'peca');
+    b.type = 'button';
+    b.dataset.id = p.id;
+    b.append(desenhoPeca(p), criar('span', 'tipo', CATS[p.cat].nome), criar('span', 'nome', p.nome), criar('span', 'spec', p.spec));
+    if (p.selo) b.append(criar('span', 'selo', p.selo));
+    const barra = criar('div'); barra.className = 'lugar-barra'; b.append(barra);
+    b.append(criar('span', 'preco', precoTexto(p.preco)));
+    b.setAttribute('aria-label', `${CATS[p.cat].nome}: ${p.nome}, ${p.spec}, ${precoTexto(p.preco)}`);
+
+    let ini = null, fantasma = null, arrastou = false;
+    const alvoEm = (x, y) => { const el = document.elementFromPoint(x, y); return el ? el.closest('.slot') : null; };
+    const mover = (e) => {
+      if (!arrastou && Math.hypot(e.clientX - ini.x, e.clientY - ini.y) < 10) return;
+      if (!arrastou) {
+        arrastou = true;
+        fantasma = criar('div', 'fantasma');
+        fantasma.innerHTML = svg(p.cat);
+        document.body.append(fantasma);
+        b.classList.add('oculta');
+      }
+      fantasma.style.left = e.clientX - 50 + 'px';
+      fantasma.style.top = e.clientY - 35 + 'px';
+      document.querySelectorAll('.slot.alvo').forEach((s) => s.classList.remove('alvo'));
+      const alvo = alvoEm(e.clientX, e.clientY);
+      if (alvo) alvo.classList.add('alvo');
+    };
+    const soltar = (e) => {
+      window.removeEventListener('pointermove', mover);
+      window.removeEventListener('pointerup', soltar);
+      window.removeEventListener('pointercancel', soltar);
+      if (!arrastou) return;
+      fantasma.remove();
+      b.classList.remove('oculta');
+      document.querySelectorAll('.slot.alvo').forEach((s) => s.classList.remove('alvo'));
+      const alvo = e.type === 'pointerup' ? alvoEm(e.clientX, e.clientY) : null;
+      if (alvo) tentarSoltar(p, alvo);
+      b.dataset.arrastou = '1';
+      setTimeout(() => { delete b.dataset.arrastou; }, 0);
+    };
+    b.addEventListener('pointerdown', (e) => {
+      if (e.button !== 0 || e.pointerType === 'touch') return;
+      ini = { x: e.clientX, y: e.clientY };
+      arrastou = false;
+      window.addEventListener('pointermove', mover);
+      window.addEventListener('pointerup', soltar);
+      window.addEventListener('pointercancel', soltar);
+    });
+    b.addEventListener('click', async () => {
+      if (b.dataset.arrastou) return;
+      if (M.pc[p.cat] === p) return remover(p.cat);
+      const slot = document.querySelector(`.slot[data-cat="${p.cat}"]`);
+      await voar(b, slot, p.cat);
+      colocar(p);
+    });
+    return b;
+  }
+
+  const cachePecas = {};
+  const semAcento = (t) => t.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+  const medida = (p) => p.cat === 'cpu' || p.cat === 'gpu' ? p.forca : p.cat === 'ram' ? p.gb / 32 * 100 : p.cat === 'ssd' ? p.gb / 20 : (p.w - 300) / 4;
+  function pintarLoja() {
+    if ($('loja').hidden) return;
+    const termo = semAcento(M.busca.trim());
+    const lista = PECAS.filter((p) => (M.filtro === 'todas' || p.cat === M.filtro)
+      && (!termo || semAcento(`${p.nome} ${p.spec} ${CATS[p.cat].nome}`).includes(termo)));
+    lista.sort((a, b) => M.ordem === 'barato' ? a.preco - b.preco : M.ordem === 'caro' ? b.preco - a.preco : (ORDEM.indexOf(a.cat) - ORDEM.indexOf(b.cat)) || medida(b) - medida(a));
+    $('contagem').textContent = `${lista.length} ${lista.length === 1 ? 'peça encontrada' : 'peças encontradas'}`;
+    if (!lista.length) {
+      $('bandeja').replaceChildren(criar('p', 'vazio-busca', 'Nenhuma peça com esse nome. Tente "RTX", "16 GB" ou "Ryzen", ou limpe a pesquisa.'));
+      return;
+    }
+    $('bandeja').replaceChildren(...lista.map((p) => {
+      const b = cachePecas[p.id] || (cachePecas[p.id] = criarPeca(p));
+      const usada = M.pc[p.cat] === p;
+      b.classList.toggle('usada', usada);
+      b.setAttribute('aria-pressed', String(usada));
+      const barra = barraDa(p);
+      b.querySelector('.lugar-barra').replaceChildren(...(barra ? [barra] : []));
+      return b;
+    }));
+  }
+
+  function pintarChips() {
+    const opcoes = [['todas', 'Todas'], ...ORDEM.map((c) => [c, CATS[c].nome])];
+    $('chips').replaceChildren(...opcoes.map(([v, t]) => {
+      const b = criar('button', 'chip', t);
+      b.type = 'button';
+      b.setAttribute('aria-pressed', String(M.filtro === v));
+      b.addEventListener('click', () => { M.filtro = v; pintarChips(); pintarLoja(); });
+      return b;
+    }));
+  }
+  $('busca').addEventListener('input', (e) => { M.busca = e.target.value; pintarLoja(); });
+  $('ordem').addEventListener('change', (e) => { M.ordem = e.target.value; pintarLoja(); });
+
+  $('abrir').addEventListener('click', async () => {
+    som.preparar();
+    $('abrir').disabled = true;
+    const cubo = document.querySelector('#caixa-monte .cubo');
+    cubo.classList.add('treme');
+    som.chacoalhar();
+    await espera(800);
+    cubo.classList.remove('treme');
+    cubo.classList.add('aberta');
+    som.abrir();
+    await espera(700);
+    M.aberta = true;
+    $('mesa-caixa').hidden = true;
+    $('loja').hidden = false;
+    pintarChips();
+    pintarLoja();
+    if (!reduzido) {
+      document.querySelectorAll('.peca').forEach((el, i) => el.animate(
+        [{ opacity: 0, transform: 'translateY(-24px) scale(.8)' }, { opacity: 1, transform: 'none' }],
+        { duration: 300, delay: i * 20, easing: 'ease-out', fill: 'backwards' }));
+    }
+  });
+
+  $('testar').addEventListener('click', () => {
+    som.preparar();
+    const t = pintarFicha();
+    // No teste, mostra também o que falta.
+    [...$('reqs').children].forEach((li, k) => {
+      const r = t[ORDEM[k]];
+      if (r.falta || !M.pc[ORDEM[k]]) { li.className = 'ruim'; li.append(criar('span', 'exp', r.texto)); }
+    });
+    const tudo = ORDEM.every((c) => t[c].ok);
+    let estrelas = 0;
+    const box = criar('div', 'resultado ' + (tudo ? 'ok' : 'ruim'));
+    if (!tudo) {
+      som.erro();
+      const erros = ORDEM.filter((c) => !t[c].ok).length;
+      box.append(criar('h3', '', `O ${M.jogo.nome} não roda`), criar('p', '', `${erros === 1 ? '1 item está vermelho' : erros + ' itens estão vermelhos'} na ficha. Leia a explicação, troque a peça e teste de novo.`));
+    } else {
+      const g = gasto(M.pc), ideal = maisBarato(M.jogo), gi = gasto(ideal);
+      // Quem usou placa de vídeo também é comparado com a montagem mais barata COM placa.
+      const usouPlaca = M.pc.gpu.id !== 'gpu-none';
+      const idealPlaca = usouPlaca ? maisBarato(M.jogo, (pc) => pc.gpu.id !== 'gpu-none') : null;
+      const gp = idealPlaca ? gasto(idealPlaca) : Infinity;
+      // 3 estrelas: até 10% acima do mais barato. 2 estrelas: até 60% acima, ou o mais barato com placa de vídeo.
+      const est = g <= gi * 1.1 ? 3 : (g <= gp * 1.1 || g <= gi * 1.6) ? 2 : 1;
+      estrelas = est;
+      som.vitoria();
+      const e = criar('div', 'estrelas');
+      e.setAttribute('aria-label', `${est} de 3 estrelas`);
+      for (let i = 0; i < 3; i++) e.append(criar('span', i < est ? '' : 'apagada', '★'));
+      let titulo, msg;
+      if (est === 3) {
+        titulo = `O ${M.jogo.nome} rodou!`;
+        msg = g <= gi ? `Montagem perfeita! ${reais(g)} em peças é o menor valor possível para rodar ${M.jogo.nome}.`
+          : `Montagem excelente! ${reais(g)} em peças, quase o mínimo possível (${reais(gi)}).`;
+      } else if (usouPlaca && M.pc.cpu.video && ideal.gpu.id === 'gpu-none') {
+        titulo = 'Rodou, mas a placa de vídeo era desnecessária';
+        msg = `O ${M.pc.cpu.nome} já tem vídeo integrado, e ele dá conta do ${M.jogo.nome}. Escolha "Sem placa de vídeo" e o PC sai por ${reais(gi)}.`;
+      } else if (usouPlaca && g <= gp * 1.1 && ideal.gpu.id === 'gpu-none') {
+        titulo = 'Ótima montagem com placa de vídeo!';
+        msg = `Você montou o PC mais barato com placa de vídeo (${reais(g)}). Para a 3ª estrela: este jogo roda sem placa, usando um processador com vídeo integrado. Assim sai por ${reais(gi)}.`;
+      } else {
+        titulo = 'Rodou, mas dá para economizar';
+        msg = `Você gastou ${reais(g)} em peças, mas dá para fazer por ${reais(gi)}. Alguma peça está mais forte do que o jogo precisa.`;
+      }
+      const botoes = criar('div', 'linha-botoes');
+      const prox = JOGOS[(JOGOS.indexOf(M.jogo) + 1) % JOGOS.length];
+      const lista = criar('ul', 'ideal');
+      lista.hidden = true;
+      ORDEM.forEach((c) => {
+        const li = criar('li');
+        li.append(criar('b', '', CATS[c].nome + ': '), `${ideal[c].nome} (${precoTexto(ideal[c].preco)})`);
+        lista.append(li);
+      });
+      if (est < 3) {
+        botoes.append(Object.assign(criar('button', 'botao', 'Montar a mais barata e testar'), { type: 'button', onclick: () => { ORDEM.forEach((c) => { M.pc[c] = ideal[c]; }); mudou(); $('testar').click(); } }));
+        botoes.append(Object.assign(criar('button', 'botao leve', 'Mostrar a montagem mais barata'), { type: 'button', onclick: (ev) => { lista.hidden = !lista.hidden; ev.target.textContent = lista.hidden ? 'Mostrar a montagem mais barata' : 'Esconder a montagem mais barata'; } }));
+      }
+      botoes.append(
+        Object.assign(criar('button', est === 3 ? 'botao' : 'botao leve', `Testar este PC no ${prox.nome}`), { type: 'button', onclick: () => escolherJogo(prox) }),
+        Object.assign(criar('button', 'botao leve', 'Escolher outro jogo'), { type: 'button', onclick: () => $('trocar').click() }));
+      const vale = est * 100 + ({ m: 50, d: 100 }[M.jogo.nivel[0]] || 0);
+      box.append(e, criar('h3', '', titulo), criar('p', 'vale-pontos', `Vale ${vale} pontos`), criar('p', '', msg), lista, botoes);
+    }
+    $('resultado').replaceChildren(box);
+    salvarMontagem(tudo, estrelas, box);
+    $('resultado').scrollIntoView({ behavior: reduzido ? 'auto' : 'smooth', block: 'nearest' });
+  });
+
+  $('trocar').addEventListener('click', () => { $('m-bancada').hidden = true; $('m-escolha').hidden = false; window.scrollTo(0, 0); });
+  $('zerar').addEventListener('click', () => { M.pc = {}; som.clique(); mudou(); });
+  pintarJogos();
+
+  // Caixa da tela inicial: abre e mostra as 5 peças numa fileira.
+  (() => {
+    const caixaHero = caixa();
+    $('caixa-hero').append(caixaHero);
+    const orbs = ORDEM.map((c) => {
+      const b = criar('button', 'orb');
+      b.type = 'button';
+      b.innerHTML = svg(c);
+      b.append(c === 'ssd' ? 'SSD' : CATS[c].nome);
+      b.setAttribute('aria-pressed', 'false');
+      b.addEventListener('click', () => {
+        orbs.forEach((o) => o.setAttribute('aria-pressed', String(o === b)));
+        $('fala-hero').textContent = `${CATS[c].nome}: ${CATS[c].serve}`;
+        som.clique();
+      });
+      $('orbita').append(b);
+      return { b, c };
+    }).map((o) => o.b);
+    let aberta = false;
+    $('abrir-hero').addEventListener('click', async () => {
+      som.preparar();
+      const cubo = caixaHero.querySelector('.cubo');
+      $('abrir-hero').disabled = true;
+      if (!aberta) {
+        cubo.classList.add('treme'); som.chacoalhar();
+        await espera(700);
+        cubo.classList.remove('treme'); cubo.classList.add('aberta'); som.abrir();
+        await espera(350);
+        $('orbita').hidden = false;
+        orbs.forEach((b, i) => {
+          if (!reduzido) b.animate([{ opacity: 0, transform: 'translateY(-90px) scale(.3)' }, { opacity: 1, transform: 'none' }],
+            { duration: 450, delay: i * 120, easing: 'cubic-bezier(.3, 1.4, .5, 1)', fill: 'backwards' });
+          setTimeout(() => som.passo(i), reduzido ? 0 : i * 120);
+        });
+        $('fala-hero').textContent = 'Estas são as 5 peças principais. Toque em cada uma para saber o que ela faz.';
+        $('abrir-hero').textContent = 'Guardar as peças';
+      } else {
+        $('orbita').hidden = true;
+        orbs.forEach((b) => b.setAttribute('aria-pressed', 'false'));
+        cubo.classList.remove('aberta');
+        $('fala-hero').textContent = 'Toque no botão para ver as peças que ficam dentro de um computador.';
+        $('abrir-hero').textContent = 'Abrir a caixa';
+      }
+      aberta = !aberta;
+      $('abrir-hero').disabled = false;
+    });
+  })();
+
+  // =====================================================
+  // TÉCNICO POR UM DIA: o cliente conta o problema e a pessoa clica na peça.
+  // =====================================================
+  const PARTES = {
+    cpu: { nome: 'Processador', art: 'o processador' },
+    cooler: { nome: 'Cooler', art: 'o cooler', sub: 'ventoinha do processador' },
+    ram: { nome: 'Memória', art: 'a memória' },
+    gpu: { nome: 'Placa de vídeo', art: 'a placa de vídeo' },
+    bateria: { nome: 'Bateria', art: 'a bateria da placa-mãe', sub: 'redonda, tipo moeda' },
+    ssd: { nome: 'SSD', art: 'o SSD', sub: 'onde fica o Windows' },
+    placa: { nome: 'Placa-mãe', art: 'a placa-mãe', sub: 'liga todas as peças' },
+    rede: { nome: 'Placa de rede', art: 'a placa de rede', sub: 'Wi-Fi e internet' },
+    psu: { nome: 'Fonte', art: 'a fonte', sub: 'leva a energia da tomada' },
+    cabo: { nome: 'Cabo do monitor', art: 'o cabo do monitor', sub: 'atrás do PC' },
+    monitor: { nome: 'Monitor', art: 'o monitor', sub: 'a tela' },
+    perif: { nome: 'Mouse e teclado', art: 'o mouse ou o teclado', sub: 'fora do gabinete' },
+  };
+  const CASOS = [
+    // Fonte
+    { peca: 'psu', cliente: 'Dona Maria', tipo: 'aposentada', fala: 'Apertei o botão de ligar e não acontece nada. Nem uma luzinha acende.',
+      dica: 'Se nada acende, está faltando energia. Qual peça leva a energia da tomada para o PC?',
+      porque: 'Sem a fonte, nenhuma peça recebe energia, então nada liga.', conserto: 'Conferir se o cabo está na tomada e trocar a fonte.' },
+    { peca: 'psu', cliente: 'Bia', tipo: 'gamer', fala: 'Comprei uma placa de vídeo nova e agora, quando abro um jogo, o PC desliga do nada.',
+      dica: 'A placa nova gasta mais energia. Qual peça fornece essa energia?',
+      porque: 'A fonte é fraca para a placa nova: quando o jogo pede mais energia, ela não aguenta.', conserto: 'Trocar por uma fonte com os watts que a placa de vídeo pede.' },
+    { peca: 'psu', cliente: 'Seu Paulo', tipo: 'padeiro', fala: 'O PC reinicia sozinho e sinto um cheiro de queimado perto de onde entra o cabo da tomada.',
+      dica: 'O cheiro vem de onde a energia da tomada entra no PC. Qual peça fica ali?',
+      porque: 'A fonte está queimando por dentro e não consegue mandar energia estável, então o PC reinicia.', conserto: 'Desligar da tomada na hora e trocar a fonte por uma de boa qualidade.' },
+    // Memória
+    { peca: 'ram', cliente: 'Seu João', tipo: 'comerciante', fala: 'O PC liga, as luzes acendem, mas a tela fica preta e ele faz bip, bip, bip.',
+      dica: 'Os apitos são um alarme da placa-mãe. Ela apita quando não encontra a "bancada de trabalho" do PC.',
+      porque: 'Quando a memória está solta ou com defeito, a placa-mãe avisa com apitos e não liga a tela.', conserto: 'Tirar a memória, limpar o contato dourado e encaixar de novo até ouvir o clique.' },
+    { peca: 'ram', cliente: 'Carla', tipo: 'designer', fala: 'Quando abro muitas abas e programas juntos, tudo fica lento e trava.',
+      dica: 'Lembra da bancada de trabalho? Se ela é pequena, não cabe tudo aberto ao mesmo tempo.',
+      porque: 'Pouca memória: não cabe tudo o que está aberto, e o PC fica lento.', conserto: 'Colocar mais memória, por exemplo passar de 8 GB para 16 GB.' },
+    { peca: 'ram', cliente: 'Lara', tipo: 'youtuber', fala: 'Quando edito meus vídeos, aparece a mensagem "memória insuficiente" e o programa fecha.',
+      dica: 'A própria mensagem dá a pista: qual peça guarda o que está aberto enquanto você trabalha?',
+      porque: 'Editar vídeo usa muita memória. Quando ela acaba, o programa não tem onde trabalhar e fecha.', conserto: 'Colocar mais memória, por exemplo passar de 8 GB para 16 GB ou 32 GB.' },
+    // Placa de vídeo
+    { peca: 'gpu', cliente: 'Rafa', tipo: 'streamer', fala: 'Os jogos ficam travando e as imagens engasgam, mas o resto do PC vai bem.',
+      dica: 'Qual peça desenha as imagens dos jogos?',
+      porque: 'A placa de vídeo é fraca para esses jogos e não consegue desenhar as imagens a tempo.', conserto: 'Trocar por uma placa de vídeo mais forte e conferir se a fonte aguenta.' },
+    { peca: 'gpu', cliente: 'Kauã', tipo: 'gamer', fala: 'Quando estou jogando, aparecem quadradinhos coloridos e riscos na tela. Fora do jogo fica normal.',
+      dica: 'O problema só aparece quando o PC precisa desenhar imagens pesadas. Quem faz esse trabalho?',
+      porque: 'A placa de vídeo está com defeito ou esquentando demais, e erra o desenho das imagens.', conserto: 'Limpar a poeira da placa de vídeo; se continuar, trocar a placa.' },
+    // SSD
+    { peca: 'ssd', cliente: 'Ana', tipo: 'professora', fala: 'Liga, aparece o logo da marca e depois a mensagem "Nenhum sistema encontrado".',
+      dica: 'O Windows fica guardado em uma das peças, mesmo com o PC desligado. Qual?',
+      porque: 'O PC ligou, mas não achou o Windows: a peça que guarda o sistema falhou.', conserto: 'Conferir o cabo do SSD; se ele estiver queimado, trocar e instalar o Windows de novo.' },
+    { peca: 'ssd', cliente: 'Seu Antônio', tipo: 'contador', fala: 'Meu PC demora uns 3 minutos para ligar e para abrir qualquer programa.',
+      dica: 'Onde ficam guardados o Windows e os programas? Se essa peça for antiga, tudo demora.',
+      porque: 'O PC usa um HD antigo, que é lento para ler os arquivos.', conserto: 'Trocar o HD antigo por um SSD. Fica várias vezes mais rápido.' },
+    { peca: 'ssd', cliente: 'Henrique', tipo: 'fotógrafo', fala: 'Aparece o aviso "disco cheio" e não consigo salvar mais nenhuma foto.',
+      dica: 'As fotos ficam guardadas mesmo com o PC desligado. Em qual peça?',
+      porque: 'O SSD é o armário do PC, e ele lotou: não tem mais espaço para guardar fotos.', conserto: 'Colocar um SSD maior ou um segundo SSD, e passar as fotos antigas para lá.' },
+    // Cooler
+    { peca: 'cooler', cliente: 'Pedro', tipo: 'gamer', fala: 'Funciona uns 10 minutos, fica muito quente e desliga sozinho.',
+      dica: 'O processador esquenta muito. Qual peça sopra ar para esfriá-lo?',
+      porque: 'O cooler parou ou está cheio de poeira. O processador esquenta e o PC desliga para se proteger.', conserto: 'Limpar a poeira e trocar o cooler e a pasta térmica.' },
+    { peca: 'cooler', cliente: 'Dona Rosa', tipo: 'cozinheira', fala: 'Meu PC faz um barulho de avião decolando e fica muito quente.',
+      dica: 'Barulho alto de vento vem de uma peça que gira para esfriar o PC. Qual?',
+      porque: 'O cooler está cheio de poeira e precisa girar no máximo para esfriar, por isso faz tanto barulho.', conserto: 'Limpar a poeira do cooler e trocar a pasta térmica do processador.' },
+    // Bateria
+    { peca: 'bateria', cliente: 'Vó Lurdes', tipo: 'avó', fala: 'Toda vez que ligo o computador, a data volta para 01/01/2000.',
+      dica: 'Uma peça pequena, em formato de moeda, mantém o relógio funcionando com o PC desligado da tomada.',
+      porque: 'A bateria da placa-mãe acabou, então o PC esquece a data e a hora quando fica desligado.', conserto: 'Trocar a bateria redonda (CR2032). Custa poucos reais.' },
+    { peca: 'bateria', cliente: 'Seu Jorge', tipo: 'taxista', fala: 'Quando ligo, aparece uma tela pedindo para apertar F1, e o horário do PC fica sempre errado.',
+      dica: 'O PC esquece as configurações e a hora. Qual peça pequena guarda isso com o PC desligado?',
+      porque: 'A bateria da placa-mãe está fraca. O PC perde a hora e as configurações e pede F1 para continuar.', conserto: 'Trocar a bateria redonda (CR2032) e acertar a data e a hora.' },
+    // Processador
+    { peca: 'cpu', cliente: 'Thiago', tipo: 'técnico iniciante', fala: 'Troquei o processador ontem e agora o PC liga, mas não aparece nada na tela.',
+      dica: 'Qual peça foi mexida antes do problema começar?',
+      porque: 'Depois da troca, o processador ficou mal encaixado ou não é compatível com a placa-mãe.', conserto: 'Encaixar o processador de novo com cuidado e conferir se ele combina com a placa-mãe.' },
+    { peca: 'cpu', cliente: 'Isabela', tipo: 'programadora', fala: 'Quando abro vários programas, o PC fica lento, mesmo com a memória sobrando.',
+      dica: 'Se a memória sobra, o problema é quem faz as contas. Qual é o "cérebro" do PC?',
+      porque: 'O processador é fraco para tantos programas ao mesmo tempo e não dá conta de fazer todas as contas.', conserto: 'Trocar por um processador com mais núcleos que combine com a placa-mãe.' },
+    // Placa-mãe
+    { peca: 'placa', cliente: 'Rodrigo', tipo: 'eletricista', fala: 'Faltou luz aqui em casa e o PC não ligou mais. Já testei outra fonte e não resolveu.',
+      dica: 'A fonte já foi testada. Qual peça grande liga todas as outras e pode ter queimado com a queda de luz?',
+      porque: 'A queda de luz queimou a placa-mãe. Sem ela, as peças não conversam entre si e o PC não liga.', conserto: 'Trocar a placa-mãe e usar um estabilizador ou nobreak para proteger o PC.' },
+    { peca: 'placa', cliente: 'Fernanda', tipo: 'dentista', fala: 'De repente pararam todas as entradas USB e o som do computador.',
+      dica: 'As entradas USB e o som ficam presos na mesma peça grande. Qual?',
+      porque: 'As entradas USB e o som ficam na placa-mãe. Quando várias coisas dela param juntas, a placa está com defeito.', conserto: 'Atualizar os programas da placa-mãe; se não resolver, trocar a placa-mãe.' },
+    // Placa de rede
+    { peca: 'rede', cliente: 'Juliana', tipo: 'enfermeira', fala: 'O PC não conecta na internet, e o ícone do Wi-Fi sumiu do canto da tela.',
+      dica: 'Se o PC nem mostra o Wi-Fi, ele não está achando a peça que conversa com a internet.',
+      porque: 'A placa de rede parou de funcionar, então o PC não encontra nenhum Wi-Fi.', conserto: 'Reinstalar o programa da placa de rede; se não voltar, trocar ou colocar um adaptador Wi-Fi USB.' },
+    { peca: 'rede', cliente: 'Marcos', tipo: 'motoboy', fala: 'No celular a internet funciona bem, mas no PC ela cai toda hora.',
+      dica: 'Se no celular funciona, a internet da casa está boa. Qual peça do PC recebe a internet?',
+      porque: 'A internet chega bem na casa, mas a placa de rede do PC está fraca ou com defeito e perde a conexão.', conserto: 'Atualizar o programa da placa de rede ou trocar a placa por uma melhor.' },
+    // Cabo do monitor
+    { peca: 'cabo', cliente: 'Lucas', tipo: 'estudante', fala: 'Mudei o PC de mesa e agora o monitor só mostra "Sem sinal". Antes funcionava.',
+      dica: 'Se funcionava antes de mudar de lugar, alguma coisa pode ter soltado.',
+      porque: 'O PC está funcionando, mas a imagem não chega ao monitor porque o cabo soltou na mudança.', conserto: 'Encaixar bem o cabo do monitor na placa de vídeo.' },
+    { peca: 'cabo', cliente: 'Davi', tipo: 'estudante', fala: 'A imagem pisca e some quando eu encosto na mesa.',
+      dica: 'Se mexer na mesa faz a imagem sumir, algo está mal encaixado entre o PC e a tela.',
+      porque: 'O cabo do monitor está frouxo ou com mau contato: qualquer tremida faz a imagem sumir.', conserto: 'Encaixar bem o cabo nas duas pontas; se continuar, trocar o cabo.' },
+    // Monitor
+    { peca: 'monitor', cliente: 'Dona Cida', tipo: 'costureira', fala: 'O PC está ligado e funcionando, mas a tela não acende. Nem a luzinha dela acende.',
+      dica: 'Se nem a luzinha da tela acende, o problema não está dentro do PC.',
+      porque: 'O PC funciona, mas o monitor não liga: ele está queimado ou sem energia.', conserto: 'Conferir o cabo de energia do monitor; se não resolver, consertar ou trocar o monitor.' },
+    { peca: 'monitor', cliente: 'Gustavo', tipo: 'arquiteto', fala: 'Apareceu uma mancha escura que não sai da tela. Liguei o PC em outra tela e ficou perfeito.',
+      dica: 'Em outra tela a imagem ficou perfeita. Então qual peça tem o defeito?',
+      porque: 'Se em outra tela fica perfeito, o PC está bom. A mancha é um defeito do próprio monitor.', conserto: 'Levar o monitor na garantia ou trocar o monitor.' },
+    // Mouse e teclado
+    { peca: 'perif', cliente: 'Seu Zé', tipo: 'aposentado', fala: 'A setinha não mexe e o teclado não escreve nada.',
+      dica: 'O PC pode estar bom. Por onde você dá as ordens para ele?',
+      porque: 'O mouse e o teclado estão soltos ou sem pilha, então o PC não recebe os comandos.', conserto: 'Encaixar bem os cabos USB, ou trocar as pilhas se forem sem fio.' },
+    { peca: 'perif', cliente: 'Bruna', tipo: 'secretária', fala: 'Quando digito, algumas letras não saem.',
+      dica: 'Só algumas letras falham. Qual peça tem as letras?',
+      porque: 'Algumas teclas do teclado estão sujas ou gastas e não funcionam.', conserto: 'Limpar o teclado; se as teclas continuarem falhando, trocar o teclado.' },
+    { peca: 'perif', cliente: 'Mariana', tipo: 'criança', fala: 'A setinha da tela fica pulando sozinha de um lado para o outro.',
+      dica: 'Quem controla a setinha da tela?',
+      porque: 'O mouse está sujo embaixo ou com a pilha fraca, e a setinha pula sozinha.', conserto: 'Limpar a luz embaixo do mouse, usar um mouse pad e trocar a pilha se for sem fio.' },
+  ];
+  const RODADAS = 6;
+  const T = { fila: [], rodada: 0, acertos: 0, caso: null, tentativas: 0, usouDica: false, resolvido: false };
+  // Primeira letra do primeiro e do último nome: "Dona Maria" vira DM, "Lucas" vira L.
+  const iniciais = (nome) => { const p = nome.trim().split(/\s+/); return (p[0][0] + (p.length > 1 ? p[p.length - 1][0] : '')).toUpperCase(); };
+
+  function pintarInterior() {
+    $('interior').replaceChildren(...Object.entries(PARTES).map(([id, p]) => {
+      const b = criar('button', 'parte');
+      b.type = 'button';
+      b.dataset.id = id;
+      b.style.gridArea = id;
+      b.innerHTML = svg(id);
+      b.append(p.nome);
+      if (p.sub) b.append(criar('small', '', p.sub));
+      b.addEventListener('click', () => escolherParte(id, b));
+      return b;
+    }));
+  }
+
+  function botao(texto, fn, leve) {
+    const b = criar('button', 'botao' + (leve ? ' leve' : ''), texto);
+    b.type = 'button';
+    b.addEventListener('click', fn);
+    return b;
+  }
+
+  function comecarDesafio() {
+    T.fila = embaralhar(CASOS).slice(0, RODADAS);
+    T.rodada = 0;
+    T.acertos = 0;
+    proximoCliente();
+  }
+
+  function proximoCliente() {
+    if (T.rodada >= T.fila.length) return fimDesafio();
+    const c = T.caso = T.fila[T.rodada];
+    T.tentativas = 0; T.usouDica = false; T.resolvido = false;
+    pintarInterior();
+    const quem = criar('div', 'quem-fala');
+    const info = criar('div');
+    info.append(criar('b', '', c.cliente), criar('span', '', c.tipo));
+    quem.append(criar('div', 'avatar', iniciais(c.cliente)), info);
+    const dicaBtn = botao('Pedir uma dica', () => {
+      T.usouDica = true;
+      dicaBtn.replaceWith(criar('p', 'dica-tec', 'Dica: ' + c.dica));
+      som.clique();
+    }, true);
+    dicaBtn.id = 'tec-dica';
+    $('cliente').replaceChildren(
+      criar('div', 'placar-tec', `Cliente ${T.rodada + 1} de ${T.fila.length}  •  acertos: ${T.acertos}`),
+      quem, criar('p', 'balao', c.fala),
+      criar('p', 'instrucao', 'Clique na peça do PC aberto que você acha que está com problema.'),
+      dicaBtn, criar('div', '', ''));
+    $('cliente').lastChild.id = 'tec-retorno';
+  }
+
+  function escolherParte(id, b) {
+    if (!T.caso || T.resolvido) return;
+    som.preparar();
+    const c = T.caso;
+    T.tentativas++;
+    const r = $('tec-retorno');
+    if (id !== c.peca) {
+      som.erro();
+      b.classList.remove('errou'); void b.offsetWidth; b.classList.add('errou');
+      b.disabled = true;
+      const box = criar('div', 'retorno ruim');
+      box.append(criar('b', '', `Não é ${PARTES[id].art}. `), T.usouDica ? 'Leia a dica e tente outra peça.' : 'Tente outra peça. Se quiser, peça uma dica.');
+      r.replaceChildren(box);
+      r.scrollIntoView({ behavior: reduzido ? 'auto' : 'smooth', block: 'nearest' });
+      return;
+    }
+    T.resolvido = true;
+    const dePrimeira = T.tentativas === 1;
+    if (dePrimeira) T.acertos++;
+    som.vitoria();
+    b.classList.add('consertada');
+    document.querySelectorAll('.parte').forEach((x) => { x.disabled = true; });
+    const box = criar('div', 'retorno ok');
+    box.append(
+      criar('b', '', dePrimeira ? (T.usouDica ? 'Acertou com a dica!' : 'Acertou de primeira!') : 'Achou!'),
+      criar('p', '', `Era ${PARTES[c.peca].art}. ${c.porque}`),
+      criar('small', '', 'Como o técnico resolve: ' + c.conserto),
+      criar('p', '', `${c.cliente}: "Funcionou! Muito obrigado!"`));
+    T.rodada++;
+    const linha = criar('div', 'linha-botoes');
+    linha.append(botao(T.rodada < T.fila.length ? 'Próximo cliente' : 'Ver meu resultado', proximoCliente));
+    r.replaceChildren(box, linha);
+    r.scrollIntoView({ behavior: reduzido ? 'auto' : 'smooth', block: 'nearest' });
+    const dica = $('tec-dica'); if (dica) dica.remove();
+  }
+
+  function fimDesafio() {
+    const n = T.fila.length;
+    T.caso = null;
+    pintarInterior();
+    document.querySelectorAll('.parte').forEach((x) => { x.disabled = true; });
+    som.vitoria();
+    const msg = T.acertos === n ? 'Perfeito! Você resolveu todos de primeira, como um técnico de verdade.'
+      : T.acertos >= 3 ? 'Muito bem! Você já entende o que cada peça faz.'
+      : 'Valeu a tentativa! Jogue de novo: os clientes mudam a cada rodada.';
+    const linha = criar('div', 'linha-botoes');
+    linha.append(botao('Atender novos clientes', comecarDesafio));
+    $('cliente').replaceChildren(criar('h3', '', `Você acertou de primeira ${T.acertos} de ${n} casos`), criar('p', 'vale-pontos', `Vale ${T.acertos * 50} pontos`), criar('p', 'instrucao', msg), linha);
+    salvarDiagnostico(T.acertos, n, $('cliente'));
+  }
+
+  pintarInterior();
+  comecarDesafio();
+
+  // =====================================================
+  // CAMINHO DO CLIQUE
+  // =====================================================
+  const PAPEL = {
+    entrada: { nome: 'Mouse e teclado', cozinha: 'Garçom', fala: 'leva o seu pedido' },
+    cpu: { nome: 'Processador', cozinha: 'Cozinheiro', fala: 'decide e faz o trabalho' },
+    ram: { nome: 'Memória', cozinha: 'Bancada', fala: 'onde fica o que está em uso' },
+    ssd: { nome: 'SSD', cozinha: 'Despensa', fala: 'guarda tudo, mesmo fechada' },
+    gpu: { nome: 'Placa de vídeo', cozinha: 'Montador do prato', fala: 'deixa tudo bonito' },
+    monitor: { nome: 'Monitor', cozinha: 'Mesa do cliente', fala: 'onde você vê o resultado' },
+  };
+  const ACOES = [
+    { nome: 'Abrir um jogo', comparar: 'Quase todo esse tempo é o SSD lendo o jogo. Num HD antigo, essa parte demoraria bem mais. Por isso, trocar o HD por um SSD deixa o PC muito mais rápido.', passos: [
+      ['entrada', 'Você dá dois cliques no ícone do jogo.', 'O cliente faz o pedido ao garçom.', 1],
+      ['cpu', 'O processador recebe o pedido e decide o que fazer.', 'O cozinheiro lê o pedido.', 0.01],
+      ['ssd', 'O jogo está guardado no SSD.', 'Os ingredientes estão na despensa.', 8000],
+      ['ram', 'O jogo é copiado para a memória, onde o acesso é muito mais rápido.', 'O cozinheiro tira os ingredientes da despensa e coloca na bancada, perto da mão.', 2000],
+      ['cpu', 'O processador roda as regras do jogo.', 'O cozinheiro prepara a comida.', 4000],
+      ['gpu', 'A placa de vídeo desenha cada imagem do jogo.', 'Alguém monta e decora o prato.', 16],
+      ['monitor', 'O jogo aparece na tela.', 'O prato chega à mesa.', 5],
+    ] },
+    { nome: 'Digitar uma letra', comparar: '', passos: [
+      ['entrada', 'Você aperta a tecla A.', 'O cliente pede mais um item.', 1],
+      ['cpu', 'O processador entende qual tecla foi apertada.', 'O cozinheiro lê o pedido.', 0.01],
+      ['ram', 'A letra entra no texto que está aberto na memória.', 'O item vai para o prato que já está na bancada.', 0.01],
+      ['gpu', 'A placa de vídeo desenha a letra no lugar certo.', 'O prato é arrumado de novo.', 16],
+      ['monitor', 'A letra A aparece na tela num piscar de olhos.', 'O prato volta para a mesa.', 10],
+    ] },
+    { nome: 'Salvar uma foto', comparar: '', passos: [
+      ['entrada', 'Você clica em Salvar.', 'O cliente pede para guardar as sobras.', 1],
+      ['cpu', 'O processador recebe o pedido.', 'O cozinheiro lê o pedido.', 0.01],
+      ['ram', 'A foto está na memória, mas a memória apaga tudo quando o PC desliga.', 'As sobras estão na bancada, que é limpa quando a lanchonete fecha.', 0.01],
+      ['ssd', 'Por isso a foto é gravada no SSD, que guarda mesmo desligado.', 'As sobras vão para a despensa, que guarda até amanhã.', 20],
+      ['monitor', 'Aparece "Foto salva" na tela.', 'O garçom avisa: está guardado!', 16],
+    ] },
+  ];
+  const C = { acao: null, i: 0 };
+
+  $('analogia').replaceChildren(...Object.entries(PAPEL).map(([, p]) => {
+    const d = criar('div');
+    d.append(criar('b', '', p.nome), `= ${p.cozinha}, ${p.fala}`);
+    return d;
+  }));
+  $('acoes-caminho').replaceChildren(...ACOES.map((a) => {
+    const b = criar('button', 'acao', a.nome);
+    b.type = 'button';
+    b.setAttribute('aria-pressed', 'false');
+    b.addEventListener('click', () => { som.preparar(); C.acao = a; C.i = 0; pintarCaminho(); });
+    return b;
+  }));
+
+  function pintarCaminho() {
+    const a = C.acao;
+    document.querySelectorAll('.acao').forEach((b) => b.setAttribute('aria-pressed', String(b.textContent === a.nome)));
+    const trilha = [];
+    a.passos.forEach(([id], k) => {
+      if (k) trilha.push(criar('div', 'seta' + (k <= C.i ? ' feita' : '')));
+      const p = criar('div', 'parada' + (k === C.i ? ' atual' : k < C.i ? ' feita' : ''));
+      p.innerHTML = svg(id);
+      p.append(PAPEL[id].nome);
+      trilha.push(p);
+    });
+    $('trilha').replaceChildren(...trilha);
+    const [id, pc, coz, ms] = a.passos[C.i];
+    $('c-peca').innerHTML = svg(id);
+    $('c-peca').append(PAPEL[id].nome);
+    $('c-quem').replaceChildren(PAPEL[id].cozinha);
+    $('c-pc').replaceChildren(pc, criar('br'), criar('span', 'tempo-passo', 'Leva ' + fmtTempo(ms)));
+    $('c-coz').textContent = coz;
+    $('c-n').textContent = `Passo ${C.i + 1} de ${a.passos.length}`;
+    $('c-voltar').disabled = C.i === 0;
+    $('c-prox').disabled = false;
+    $('c-prox').textContent = C.i === a.passos.length - 1 ? 'Ver de novo' : 'Próximo passo';
+    som.passo(C.i);
+    if (C.i === a.passos.length - 1) mostrarTempo(a); else $('resumo-tempo').hidden = true;
+    const atual = $('trilha').querySelector('.atual');
+    if (atual) atual.scrollIntoView({ behavior: reduzido ? 'auto' : 'smooth', block: 'nearest', inline: 'center' });
+  }
+  function fmtTempo(ms) {
+    if (ms < 1) return 'menos de 1 milésimo de segundo';
+    if (ms < 1000) return `${Math.round(ms)} ${Math.round(ms) === 1 ? 'milésimo' : 'milésimos'} de segundo`;
+    return `${(ms / 1000).toLocaleString('pt-BR', { maximumFractionDigits: 1 })} segundos`;
+  }
+  function mostrarTempo(a) {
+    const total = a.passos.reduce((s, p) => s + p[3], 0);
+    const maior = Math.max(...a.passos.map((p) => p[3]));
+    const box = $('resumo-tempo');
+    const linhas = a.passos.map(([id, , , ms]) => {
+      const l = criar('div', 'linha-tempo');
+      const barra = criar('div'); const b = criar('div', 'b'); b.style.width = Math.max(.5, ms / maior * 100) + '%'; barra.append(b);
+      l.append(criar('span', '', PAPEL[id].nome), barra, criar('span', '', ms < 1 ? 'menos de 1 ms' : ms < 1000 ? `${Math.round(ms)} ms` : `${(ms / 1000).toLocaleString('pt-BR', { maximumFractionDigits: 1 })} s`));
+      return l;
+    });
+    const comparacao = a.comparar || `Um piscar de olhos dura cerca de 300 milésimos de segundo. Isso foi cerca de ${Math.round(300 / total)} vezes mais rápido que piscar.`;
+    box.replaceChildren(criar('h3', '', 'Do clique até a tela: ' + fmtTempo(total)), criar('p', '', comparacao), ...linhas,
+      criar('p', 'nota-fonte', 'Tempos aproximados de um PC comum com SSD (ms = milésimos de segundo; s = segundos). Eles mudam de um computador para outro.'));
+    box.hidden = false;
+  }
+  $('c-prox').addEventListener('click', () => {
+    if (!C.acao) return;
+    if (C.i === C.acao.passos.length - 1) C.i = 0; else C.i++;
+    if (C.i === C.acao.passos.length - 1) som.vitoria();
+    pintarCaminho();
+  });
+  $('c-voltar').addEventListener('click', () => { if (C.acao && C.i > 0) { C.i--; pintarCaminho(); } });
+
+
+  // =====================================================
+  // SERVIDOR, BANCO MYSQL, CADASTRO E PAINEL
+  // Sem o servidor (node server.js), o site funciona com os dados embutidos e não grava nada.
+  // =====================================================
+  const SRV = { online: false };
+  let jogador = null;
+  let pulouCadastro = false;
+  try { jogador = JSON.parse(localStorage.getItem('tb-jogador') || 'null'); } catch (_) {}
+
+  async function pedir(caminho, opcoes) {
+    let r;
+    try { r = await fetch(caminho, opcoes); } catch (_) { throw new Error('O servidor não respondeu. Inicie o site com INICIAR.bat ou "node server.js".'); }
+    const corpo = await r.json().catch(() => { throw new Error('O servidor não respondeu. Inicie o site com INICIAR.bat ou "node server.js".'); });
+    if (!r.ok) throw new Error(corpo.erro || 'Não foi possível concluir a operação.');
+    return corpo;
+  }
+  const enviar = (caminho, dados) => pedir(caminho, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dados) });
+
+  const dbPeca = (r) => ({
+    id: r.slug, cat: r.categoria, nome: r.nome, spec: r.spec, preco: Number(r.preco),
+    forca: r.forca ?? undefined, nucleos: r.nucleos ?? undefined, threads: r.threads ?? undefined,
+    video: r.video ?? 0, gb: r.gb ?? undefined, w: r.watts ?? undefined, fonte: r.fonte_recomendada ?? 0, selo: r.selo || undefined,
+  });
+  const dbJogo = (r) => ({
+    id: r.slug, nome: r.nome, nivel: [r.nivel, r.nivel_nome], preco: Number(r.preco), loja: r.loja, desc: r.descricao,
+    cpu: { texto: r.cpu_texto, forca: r.cpu_forca, nucleos: r.cpu_nucleos, threads: r.cpu_threads },
+    ram: { gb: r.ram_gb, gbIntegrado: r.ram_gb_integrado ?? undefined },
+    video: { texto: r.video_texto, forca: r.video_forca }, espaco: r.espaco_gb,
+  });
+
+  async function conectar() {
+    const aviso = $('fonte-dados');
+    try {
+      const st = await pedir('/api/status');
+      if (!st.banco) throw new Error(`Sem conexão com o MySQL em ${st.host}. Rode node testar-banco.js para ver o motivo.`);
+      const [jogos, pecas] = await Promise.all([pedir('/api/jogos'), pedir('/api/pecas')]);
+      if (!jogos.length || !pecas.length) throw new Error('O banco está sem jogos ou peças. Execute o banco.sql.');
+      JOGOS.splice(0, JOGOS.length, ...jogos.map(dbJogo));
+      PECAS.splice(0, PECAS.length, ...pecas.map(dbPeca));
+      Object.keys(cachePecas).forEach((k) => delete cachePecas[k]);
+      SRV.online = true;
+      aviso.className = 'fonte-dados online';
+      aviso.textContent = `Jogos e peças carregados do banco MySQL ${st.nome} (${jogos.length} jogos, ${pecas.length} peças).`;
+      pintarJogos();
+    } catch (e) {
+      SRV.online = false;
+      aviso.className = 'fonte-dados';
+      aviso.textContent = location.protocol === 'file:' || /fetch|servidor/i.test(e.message)
+        ? 'Modo demonstração: usando dados embutidos e nada é gravado. Para usar o banco, abra o site pelo servidor (INICIAR.bat).'
+        : 'Modo demonstração: ' + e.message;
+      if (jogador && jogador.id) { jogador = null; guardarJogador(); }
+    }
+    pintarQuem();
+    atualizarPontos();
+    aoMudarRota();
+  }
+
+  function guardarJogador() {
+    try { if (jogador) localStorage.setItem('tb-jogador', JSON.stringify(jogador)); else localStorage.removeItem('tb-jogador'); } catch (_) {}
+  }
+  let meusPontos = null;
+  function pintarQuem() {
+    $('quem').textContent = !jogador ? 'Entrar' : meusPontos === null ? jogador.nome : `${jogador.nome} · ${meusPontos} pts`;
+    $('quem').title = jogador ? 'Trocar de jogador' : 'Fazer cadastro';
+  }
+  // Busca os pontos do jogador no servidor e mostra no botão do topo.
+  async function atualizarPontos() {
+    if (!SRV.online || !jogador || !jogador.id) { meusPontos = null; return pintarQuem(); }
+    const id = jogador.id;
+    try {
+      const p = await pedir('/api/pontos?jogador_id=' + encodeURIComponent(id));
+      if (jogador && jogador.id === id) meusPontos = Number(p.total) || 0;
+    } catch (_) { meusPontos = null; }
+    pintarQuem();
+  }
+  function abrirCadastro() {
+    $('cad-erro').textContent = '';
+    $('cad-nome').value = '';
+    $('cad-email').value = '';
+    $('cadastro').hidden = false;
+    $('cad-nome').focus();
+  }
+  function fecharCadastro() { $('cadastro').hidden = true; }
+
+  $('quem').addEventListener('click', abrirCadastro);
+  $('cad-pular').addEventListener('click', () => { pulouCadastro = true; fecharCadastro(); });
+  $('cadastro').addEventListener('keydown', (e) => { if (e.key === 'Escape') { pulouCadastro = true; fecharCadastro(); } });
+  $('cad-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const nome = $('cad-nome').value.trim().replace(/\s+/g, ' ');
+    if (nome.length < 2) { $('cad-erro').textContent = 'Digite seu nome, com pelo menos 2 letras.'; return; }
+    if (!SRV.online) {
+      jogador = { id: null, nome };
+      meusPontos = null;
+      guardarJogador(); pintarQuem(); fecharCadastro();
+      toast('Modo demonstração: o cadastro não foi gravado no banco.');
+      return;
+    }
+    $('cad-enviar').disabled = true;
+    try {
+      const r = await enviar('/api/jogadores', { nome, email: $('cad-email').value });
+      jogador = { id: r.id, nome: r.nome };
+      meusPontos = null;
+      guardarJogador(); pintarQuem(); fecharCadastro();
+      atualizarPontos();
+      som.encaixe();
+      toast(r.novo ? `Cadastro gravado no MySQL com o ID ${r.id}.` : `Bem-vindo de volta, ${r.nome}!`);
+    } catch (falha) {
+      $('cad-erro').textContent = falha.message;
+    } finally {
+      $('cad-enviar').disabled = false;
+    }
+  });
+
+  function nota(destino, texto, ok) {
+    destino.querySelectorAll('.salvo').forEach((n) => n.remove());
+    destino.append(criar('p', 'salvo' + (ok ? ' ok' : ''), texto));
+  }
+  async function salvarMontagem(rodou, estrelas, destino) {
+    if (!SRV.online || !ORDEM.every((c) => M.pc[c])) return;
+    if (!jogador || !jogador.id) return nota(destino, 'Faça o cadastro (botão Entrar, no topo) para seus pontos entrarem na competição.');
+    try {
+      const pecas = Object.fromEntries(ORDEM.map((c) => [c, M.pc[c].id]));
+      await enviar('/api/montagens', { jogador_id: jogador.id, jogo: M.jogo.id, pecas, rodou, estrelas });
+      nota(destino, 'Montagem salva na competição.', true);
+      atualizarPontos();
+    } catch (e) { nota(destino, e.message); }
+  }
+  async function salvarDiagnostico(acertos, total, destino) {
+    if (!SRV.online) return;
+    if (!jogador || !jogador.id) return nota(destino, 'Faça o cadastro (botão Entrar, no topo) para seus pontos entrarem na competição.');
+    try {
+      await enviar('/api/diagnosticos', { jogador_id: jogador.id, acertos, total });
+      nota(destino, 'Resultado salvo na competição.', true);
+      atualizarPontos();
+    } catch (e) { nota(destino, e.message); }
+  }
+
+  // Competição
+  let timerPainel = null;
+  const pts = (n) => Number(n || 0).toLocaleString('pt-BR');
+  function haQuanto(quando) {
+    const s = Math.max(0, (Date.now() - new Date(quando).getTime()) / 1000);
+    if (!isFinite(s) || s < 60) return 'agora mesmo';
+    if (s < 3600) return `há ${Math.floor(s / 60)} min`;
+    if (s < 86400) return `há ${Math.floor(s / 3600)} h`;
+    const d = Math.floor(s / 86400);
+    return d === 1 ? 'há 1 dia' : `há ${d} dias`;
+  }
+  function semServidor(texto) {
+    $('p-status').hidden = false;
+    $('p-status').textContent = texto;
+    $('p-conteudo').hidden = true;
+  }
+  async function atualizarPainel() {
+    if (!SRV.online) return semServidor('A competição precisa do servidor. Inicie o site com INICIAR.bat.');
+    let p;
+    try { p = await pedir('/api/painel'); } catch (e) { return semServidor(e.message); }
+    $('p-status').hidden = true;
+    $('p-conteudo').hidden = false;
+    const t = p.totais, lider = p.ranking[0];
+    $('p-kpis').replaceChildren(...[
+      [pts(t.jogadores), 'jogadores na competição'], [pts(t.rodaram), 'PCs que rodaram o jogo'],
+      [pts(t.clientes), 'clientes atendidos'], [lider ? pts(lider.total) : '0', 'pontos do líder', lider ? lider.nome : 'ninguém ainda'],
+    ].map(([v, r, extra]) => {
+      const d = criar('div', 'kpi');
+      d.append(criar('b', '', v), criar('span', '', r));
+      if (extra) d.append(criar('small', '', extra));
+      return d;
+    }));
+
+    if (!p.ranking.length) $('p-ranking').replaceChildren(criar('p', 'vazio-p', 'Ninguém fez pontos ainda. Monte um PC ou jogue o Técnico para entrar no ranking.'));
+    else {
+      const tb = criar('table', 'ranking');
+      const cab = tb.createTHead().insertRow();
+      [['Posição', ''], ['Jogador', ''], ['Montar', 'num'], ['Técnico', 'num'], ['Total', 'num']].forEach(([h, c]) => { const th = criar('th', c, h); th.scope = 'col'; cab.append(th); });
+      const corpo = tb.createTBody();
+      p.ranking.forEach((r, i) => {
+        const tr = corpo.insertRow();
+        tr.className = [['ouro', 'prata', 'bronze'][i] || '', jogador && jogador.id === r.id ? 'eu' : ''].join(' ').trim();
+        [[`${i + 1}º`, 'pos'], [r.nome, ''], [pts(r.montar), 'num'], [pts(r.tecnico), 'num'], [pts(r.total), 'num total']].forEach(([v, c]) => {
+          const td = tr.insertCell(); td.textContent = v; if (c) td.className = c;
+        });
+      });
+      $('p-ranking').replaceChildren(tb);
+    }
+
+    if (!p.feito.length) $('p-feito').replaceChildren(criar('p', 'vazio-p', 'As jogadas aparecem aqui assim que alguém montar um PC ou atender clientes.'));
+    else {
+      const ul = criar('ul', 'feito');
+      p.feito.forEach((f) => {
+        const li = criar('li');
+        const txt = criar('span');
+        if (f.tipo === 'montar') txt.append(`${f.nome} rodou ${f.jogo} `, criar('span', 'estr', '★'.repeat(f.estrelas)));
+        else txt.append(`${f.nome} resolveu ${f.acertos} de ${f.total} clientes`);
+        li.append(txt, criar('b', '', `+${pts(f.pontos)}`), criar('small', '', haQuanto(f.quando)));
+        ul.append(li);
+      });
+      $('p-feito').replaceChildren(ul);
+    }
+    // O ranking também atualiza os pontos do botão do topo.
+    if (jogador && jogador.id) {
+      const eu = p.ranking.find((r) => r.id === jogador.id);
+      if (eu && eu.total !== meusPontos) { meusPontos = eu.total; pintarQuem(); }
+    }
+  }
+
+  function aoMudarRota() {
+    const rota = location.hash.slice(1);
+    clearInterval(timerPainel);
+    if (rota === 'painel') { atualizarPainel(); timerPainel = setInterval(atualizarPainel, 5000); }
+    if ((rota === 'montar' || rota === 'ligar') && !jogador && !pulouCadastro && $('cadastro').hidden) abrirCadastro();
+  }
+  window.addEventListener('hashchange', aoMudarRota);
+  pintarQuem();
+  conectar();
+
+  mostrarRota();
+})();
+</script>
+</body>
+</html>
