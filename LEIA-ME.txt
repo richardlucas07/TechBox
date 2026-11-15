@@ -1,0 +1,50 @@
+TECHBOX - COMO LIGAR O SITE NO MYSQL
+
+1) BANCO (uma vez)
+   - Abra o MySQL Workbench e conecte como root.
+   - File > Open SQL Script > banco.sql > clique no raio.
+   - Usa o mesmo banco techbox_db de antes. Nao apaga nada: so cria
+     as tabelas novas (jogos, pecas, montagens, diagnosticos).
+
+2) RODAR O SITE
+   Opcao A - sem VS Code: clique duas vezes em INICIAR.bat.
+   Opcao B - no terminal do VS Code, dentro desta pasta:
+       npm.cmd install
+       node testar-banco.js     (esperado: OK: conectado ao MySQL)
+       node server.js
+   Abra http://localhost:3000
+   Para parar: PARAR.bat (ou Ctrl + C no terminal).
+
+3) TABELAS
+   jogadores     cadastro feito no site (nome e e-mail opcional)
+   jogos         jogos e requisitos minimos; o site le daqui
+   pecas         pecas, precos e forca; o site le daqui
+   montagens     cada PC testado: jogador, jogo, 5 pecas, gasto, estrelas
+   diagnosticos  resultado do Tecnico por um dia
+
+4) PROVAR NA APRESENTACAO
+   - Faca um cadastro (botao Entrar) e teste um PC.
+   - Abra o menu Painel: mostra os dados e o ultimo comando SQL enviado.
+   - No Workbench:
+       SELECT * FROM techbox_db.jogadores;
+       SELECT g.nome, j.nome AS jogo, m.gasto, m.rodou, m.estrelas
+         FROM techbox_db.montagens m
+         JOIN techbox_db.jogadores g ON g.id = m.jogador_id
+         JOIN techbox_db.jogos j ON j.id = m.jogo_id;
+   - Mude um preco no banco e atualize o site: o preco novo aparece.
+     (precisa rodar como root, o usuario do site so le e grava)
+       UPDATE techbox_db.pecas SET preco = 999 WHERE slug = 'gpu-3050';
+
+5) FOTOS DAS PECAS (opcional)
+   Coloque fotos em public\img com o codigo da peca (ex.: gpu-5060.jpg)
+   e no public\index.html troque USAR_FOTOS = false para true.
+
+6) MYSQL EM OUTRA MAQUINA OU VM
+   Troque DB_HOST no config.env pelo IP dela, libere a porta 3306
+   e deixe bind-address = 0.0.0.0 no MySQL de la.
+   Outros computadores acessam pelo IP desta maquina: http://IP:3000
+   (libere a porta 3000 no firewall do Windows).
+
+Banco techbox_db | usuario techbox_app | senha TechBox@2026 (oculte nos prints)
+Abrindo o index.html direto (sem servidor), o site roda em modo
+demonstracao e nao grava nada.

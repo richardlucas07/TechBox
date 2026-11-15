@@ -1,0 +1,9 @@
+{
+  "name": "techbox",
+  "version": "2.0.0",
+  "description": "TechBox: monte um PC para jogos, conserte PCs e siga o caminho do clique",
+  "main": "server.js",
+  "scripts": { "start": "node server.js", "testar": "node testar-banco.js" },
+  "engines": { "node": ">=18" },
+  "dependencies": { "mysql2": "3.11.3" }
+}
